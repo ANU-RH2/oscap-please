@@ -1,0 +1,93 @@
+* {
+ font-family: Arial;
+}
+
+h1 {
+    text-align: center;
+    color: rgb(245,140,25);
+    font-size:250%
+}
+
+h2 {
+    text-align: center;
+    color: rgb(245,140,25);
+    font-size:200%
+}
+
+h3 {
+    text-align: center;
+    color: rgb(245,140,25);
+    font-size:150%
+}
+
+p {
+    text-align: center;
+    color: red;
+    font-size:100%
+}
+
+body {
+    background-color: rgb(64,64,64);
+}
+
+td {
+    color: white;
+}
+
+td.fail {
+  background-color: #FE6A6A;
+}
+
+td.error {
+  background-color: #997D65;
+}
+
+td.notapplicable {
+  background-color: #EAD376;
+}
+
+td.notselected {
+  background-color: #CCCCCC;
+}
+
+td.pass {
+  background-color: #A6EAAA;
+}
+
+td.fixed {
+  background-color: #B0CFFE;
+}
+
+table {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td, th {
+    font-size: 2em;
+    border: 1px solid white;
+    padding: 3px 7px 2px 7px;
+}
+
+th {
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 4px;
+    background-color: rgb(255,137,81);
+    color: #ffffff;
+}
+
+.left{
+   position: relative;
+   float: left;
+   left: 0%;
+   width: 50.00%;
+}
+
+.right{
+   position: relative;
+   float: right;
+   right: 0%;
+   width: 50.00%;
+}

@@ -1,30 +1,49 @@
+from OSP.XMLtoSQL import Definition, Collection
+
 __author__ = 'Sauski'
 # A collection is a file basically
 # They are uniquely identified by the date they were
 # run as well as the computer name.
-import Definition
-
-class OVALCollection:
 
 
-    def __init__(self, machineName, date, XMLRoot):
-        self.machineName = machineName
-        self.date = date
-        self.XMLRoot = XMLRoot
-        self.definitions = []
+class OVALCollection(Collection.Collection):
+
+    def __init__(self, xml_root):
+        Collection.Collection.__init__(self, xml_root)
+
 
     def __str__(self):
-        return  "(Machine Name: " + self.machineName + \
-                " Date: " + self.date + ")"
+        return "(Machine Name: " + self.machine_name + \
+               " Date: " + self.date.__str__() + ")"
 
-    def buildDefinitions(self):
+    def build_definitions(self):
+
+        # Find Hostname
+        for host in self.xml_root.getiterator('primary_host_name'):
+            self.machine_name = host.text
+
+        # Find Date
+        generator = self.xml_root.find('generator')
+        date = generator.find('timestamp')
+        self.date = date.text
+        # Build date
+        # Dates in this format look something like 2014-07-21T02:46:46
+        formatted_date = Definition.Definition.Date(self.date[17:19],
+                                                        self.date[14:16],
+                                                        self.date[11:13],
+                                                        self.date[8:10],
+                                                        self.date[5:7],
+                                                        self.date[:4])
+
+        self.date = formatted_date
+
         # Look through our XML tree and find our definitions
         # First move through the tree to the correct position
-        oval_definitions = self.XMLRoot.find('oval_definitions')
+        oval_definitions = self.xml_root.find('oval_definitions')
         definitions = oval_definitions.find('definitions')
 
         # Find the results of these definitions
-        results = self.XMLRoot.find('results')
+        results = self.xml_root.find('results')
         system = results.find('system')
         definition_results = system.find('definitions')
 
@@ -33,7 +52,7 @@ class OVALCollection:
         # them to our list of definitions
         for definition in definitions:
             # Find the ID
-            id = definition.get('id')
+            unique_id = definition.get('id')
             # Move down into the metadata tag
             metadata = definition.find('metadata')
             # Find Title
@@ -45,14 +64,24 @@ class OVALCollection:
             # Unfortunately ElementTree has no way of searching by attribute
             # and thus our algorithm blows out by a factor of n. Although really
             # any extension would be doing this anyway.
-
+            result = 'Result not found'
             for definition_result in definition_results:
                 # Is this the result we want?
-                if definition_result.get('definition_id') == id:
+                if definition_result.get('definition_id') == unique_id:
                     result = definition_result.get('result')
                     break
 
             # We have our information, lets compile it into a definition.
-            definition_object = Definition.Definition(result, id, title, \
-                                                      description)
+            definition_object = Definition.Definition(self.machine_name,
+                                                      unique_id,
+                                                      title,
+                                                      result,
+                                                      self.date)
             self.definitions.append(definition_object)
+
+    @staticmethod
+    def is_of_type(xml_root):
+        # Is this an OVAL file?
+        # TODO Make this not just the opposite of XCCDF
+        test_result = xml_root.find('TestResult')
+        return test_result is None

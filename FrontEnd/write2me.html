@@ -1,0 +1,88 @@
+
+
+
+
+<html>
+ <head>
+         <link rel="stylesheet" type="text/css" href="style.css">
+         <script src="sorttable.js"></script>
+         <script src="Chart.js"></script>
+         <script type="text/javascript">
+            function createChart() {
+                var data = [
+
+                    {
+                      value: 1,
+                      color:"#FE6A6A",
+                      label: "fail"
+                    },
+                    {
+                      value: 1,
+                      color:"#EAD376",
+                      label: "notapplicable"
+                    },
+                    {
+                      value: 3,
+                      color:"#B0CFFE",
+                      label: "fixed"
+                    },
+                    {
+                      value: 1,
+                      color:"#997D65",
+                      label: "error"
+                    },
+
+                ];
+                    var cht = document.getElementById('trChart');
+                    var ctx = cht.getContext('2d');
+                    var barChart = new Chart(ctx).Pie(data);
+                }
+         </script>
+ </head>
+ <body onload="createChart();">
+
+    <h1>OSP Report</h1>
+    <h3>Generated at 2014-08-10 23:18:57.396122</h2>
+
+    <br>
+
+    <div class="left">
+        <table class="sortable" id="report_table">
+            <thead>
+                <tr>
+                   <th>Result</th>
+                   <th>Machine Name</th>
+                   <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+    <tr>
+        <td class=notapplicable>notapplicable</td>        <td>Izod</td>        <td>1992-11-01</td>    </tr>
+
+    <tr>
+        <td class=fail>fail</td>        <td>Benz</td>        <td>2000-09-03</td>    </tr>
+
+    <tr>
+        <td class=fixed>fixed</td>        <td>Fuji</td>        <td>2014-09-15</td>    </tr>
+
+    <tr>
+        <td class=fixed>fixed</td>        <td>Giza</td>        <td>1992-09-10</td>    </tr>
+
+    <tr>
+        <td class=fixed>fixed</td>        <td>Tujo</td>        <td>2013-07-08</td>    </tr>
+
+    <tr>
+        <td class=error>error</td>        <td>Azov</td>        <td>2002-10-18</td>    </tr>
+
+            <tbody>
+        </table>
+    </div>
+
+    <div class="right">
+         <center>
+            <canvas id="trChart" width="1000" height="700"></canvas>
+         </center>
+    </div>
+ </body>
+</html>

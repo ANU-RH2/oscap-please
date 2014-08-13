@@ -1,58 +1,21 @@
-__author__ = 'Sauski'
-# A collection is a file basically
-# They are uniquely identified by the date they were
-# run as well as the computer name.
-import Definition
+__author__ = 'sauski'
+
+# 'Abstract' class from which all collection inherit and override
+
 
 class Collection:
-
-
-    def __init__(self, machineName, date, XMLRoot):
-        self.machineName = machineName
-        self.date = date
-        self.XMLRoot = XMLRoot
+    def __init__(self, xml_root):
+        self.xml_root = xml_root
         self.definitions = []
+        self.machine_name = 'unknown'
+        self.date = 'unknown'
 
     def __str__(self):
-        return  "(Machine Name: " + self.machineName + \
-                " Date: " + self.date + ")"
+        raise Exception('Abstract Class toString requested')
 
-    def buildDefinitions(self):
-        # Look through our XML tree and find our definitions
-        # First move through the tree to the correct position
-        oval_definitions = self.XMLRoot.find('oval_definitions')
-        definitions = oval_definitions.find('definitions')
+    @staticmethod
+    def is_of_type(xml_tree):
+        raise Exception('Method Not Implemented')
 
-        # Find the results of these definitions
-        results = self.XMLRoot.find('results')
-        system = results.find('system')
-        definition_results = system.find('definitions')
-
-        # Definitions is now a list of the declaration of definitions
-        # Iterate through, creating definition objects and appending
-        # them to our list of definitions
-        for definition in definitions:
-            # Find the ID
-            id = definition.get('id')
-            # Move down into the metadata tag
-            metadata = definition.find('metadata')
-            # Find Title
-            title = metadata.find('title').text
-            # Find Description
-            description = metadata.find('description').text
-
-            # With the ID we can search the rest of the document for the result
-            # Unfortunately ElementTree has no way of searching by attribute
-            # and thus our algorithm blows out by a factor of n. Although really
-            # any extension would be doing this anyway.
-
-            for definition_result in definition_results:
-                # Is this the result we want?
-                if definition_result.get('definition_id') == id:
-                    result = definition_result.get('result')
-                    break
-
-            # We have our information, lets compile it into a definition.
-            definition_object = Definition.Definition(result, id, title, \
-                                                      description)
-            self.definitions.append(definition_object)
+    def build_definitions(self):
+        raise Exception('Method Not Implemented')

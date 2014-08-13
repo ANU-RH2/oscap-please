@@ -19,5 +19,5 @@ def get_MVP():
     return sql.get_MVP()
 
 if __name__ == "__main__":
-    for r in get_machine_definition_results():
+    for r in get_MVP():
         print r
