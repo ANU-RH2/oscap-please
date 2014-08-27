@@ -1,8 +1,22 @@
-__author__ = 'Sauski'
-# This may be the common layer for custom modules in the future.
-# Definitions also define the table, they are the atomic entries.
-
+#     ______  _______ _______ _____ __   _ _____ _______ _____  _____  __   _
+#     |     \ |______ |______   |   | \  |   |      |      |   |     | | \  |
+#     |_____/ |______ |       __|__ |  \_| __|__    |    __|__ |_____| |  \_|
+#
+#       Written By: Theodore Olsauskas-Warren - u5195918
+#               In: August 2014
+#          Version: MVP
+#
+# This file defines what a definition looks like, including the basic schema
+# information for the MVP single relation database. The information that
+# collections objects extract from their respective input files must match the
+# types of information contained here. Some cleaning of inputs takes place, for
+# example only Pass, Fail and NA results are permitted, any others are changed
+# into these three types. Extending the information contained in the schema
+# is as simple as adding to the classes schema object and adding the appropriate
+# class variables.
 #TODO Fix mismatches between database names
+
+__author__ = 'u5195918'
 
 
 class Definition:

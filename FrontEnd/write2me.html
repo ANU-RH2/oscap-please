@@ -3,86 +3,184 @@
 
 
 <html>
- <head>
-         <link rel="stylesheet" type="text/css" href="style.css">
-         <script src="sorttable.js"></script>
-         <script src="Chart.js"></script>
-         <script type="text/javascript">
-            function createChart() {
-                var data = [
-
-                    {
-                      value: 1,
-                      color:"#FE6A6A",
-                      label: "fail"
-                    },
-                    {
-                      value: 1,
-                      color:"#EAD376",
-                      label: "notapplicable"
-                    },
-                    {
-                      value: 3,
-                      color:"#B0CFFE",
-                      label: "fixed"
-                    },
-                    {
-                      value: 1,
-                      color:"#997D65",
-                      label: "error"
-                    },
-
-                ];
-                    var cht = document.getElementById('trChart');
-                    var ctx = cht.getContext('2d');
-                    var barChart = new Chart(ctx).Pie(data);
-                }
-         </script>
- </head>
- <body onload="createChart();">
-
+  <head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="sorttable.js"></script>
+    <script src="Chart.js"></script>
+    <title>OSP Report</title>
+  </head>
+  <body onload="createChart();">
+    
     <h1>OSP Report</h1>
-    <h3>Generated at 2014-08-10 23:18:57.396122</h2>
+    <h3>Generated at 2014-08-20 10:29:44.879286</h2>
 
     <br>
 
     <div class="left">
-        <table class="sortable" id="report_table">
-            <thead>
-                <tr>
-                   <th>Result</th>
-                   <th>Machine Name</th>
-                   <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                
+      <h2>Definition Results</h2>
+      <hr>
+      <table class="sortable" id="def_table">
+        <thead>
+          <tr>
+            <th>Definintion</th>
+            <th>Result</th>
+            <th>Machine Name</th>
+            <th>Date</th>
+          </tr>
+      </thead>
+      <tbody>
+         
     <tr>
-        <td class=notapplicable>notapplicable</td>        <td>Izod</td>        <td>1992-11-01</td>    </tr>
+        <td>Repeated reboots of the system failed to solve problem</td>        <td class=error>error</td>        <td>Inez</td>        <td>1959-08-17</td>    </tr>
 
     <tr>
-        <td class=fail>fail</td>        <td>Benz</td>        <td>2000-09-03</td>    </tr>
+        <td>Just type 'mv * /dev/null'.</td>        <td class=fail>fail</td>        <td>Diaz</td>        <td>1983-09-04</td>    </tr>
 
     <tr>
-        <td class=fixed>fixed</td>        <td>Fuji</td>        <td>2014-09-15</td>    </tr>
+        <td>bank holiday - system operating credits not recharged.</td>        <td class=notapplicable>notapplicable</td>        <td>Cruz</td>        <td>1984-04-20</td>    </tr>
 
     <tr>
-        <td class=fixed>fixed</td>        <td>Giza</td>        <td>1992-09-10</td>    </tr>
+        <td>PEBKAC (Problem Exists Between Keyboard And Chair)</td>        <td class=fixed>fixed</td>        <td>Liza</td>        <td>2007-09-23</td>    </tr>
 
     <tr>
-        <td class=fixed>fixed</td>        <td>Tujo</td>        <td>2013-07-08</td>    </tr>
+        <td>Standing room only on the bus. </td>        <td class=pass>pass</td>        <td>Ritz</td>        <td>1957-09-15</td>    </tr>
 
     <tr>
-        <td class=error>error</td>        <td>Azov</td>        <td>2002-10-18</td>    </tr>
+        <td>had to use hammer to free stuck disk drive heads.</td>        <td class=fail>fail</td>        <td>Giza</td>        <td>1969-05-05</td>    </tr>
 
-            <tbody>
-        </table>
+    <tr>
+        <td>short leg on process table</td>        <td class=pass>pass</td>        <td>Cruz</td>        <td>1981-08-23</td>    </tr>
+
+    <tr>
+        <td>The Borg tried to assimilate your system. Resistance is futile. </td>        <td class=fail>fail</td>        <td>Diaz</td>        <td>1957-03-23</td>    </tr>
+
+    <tr>
+        <td>short leg on process table</td>        <td class=error>error</td>        <td>Baez</td>        <td>1997-07-13</td>    </tr>
+
+    <tr>
+        <td>temporary routing anomaly</td>        <td class=notselected>notselected</td>        <td>Benz</td>        <td>1991-06-24</td>    </tr>
+
+    <tr>
+        <td>bank holiday - system operating credits not recharged.</td>        <td class=error>error</td>        <td>Lodz</td>        <td>1966-06-07</td>    </tr>
+
+    <tr>
+        <td>Telecommunications is downshifting.</td>        <td class=notapplicable>notapplicable</td>        <td>Suez</td>        <td>1978-04-23</td>    </tr>
+
+    <tr>
+        <td>bank holiday - system operating credits not recharged.</td>        <td class=error>error</td>        <td>Giza</td>        <td>1971-03-15</td>    </tr>
+
+    <tr>
+        <td>temporary routing anomaly</td>        <td class=fixed>fixed</td>        <td>Diaz</td>        <td>1983-09-19</td>    </tr>
+
+    <tr>
+        <td>Electrical conduits in machine room are melting.</td>        <td class=notapplicable>notapplicable</td>        <td>Tujo</td>        <td>1991-12-02</td>    </tr>
+
+    <tr>
+        <td>old inkjet cartridges emanate barium-based fumes</td>        <td class=fixed>fixed</td>        <td>Azov</td>        <td>2003-07-03</td>    </tr>
+
+    <tr>
+        <td>Just type 'mv * /dev/null'.</td>        <td class=notapplicable>notapplicable</td>        <td>Lodz</td>        <td>1970-11-11</td>    </tr>
+
+    <tr>
+        <td>Program load too heavy for processor to lift.</td>        <td class=error>error</td>        <td>Tujo</td>        <td>1987-11-14</td>    </tr>
+
+    <tr>
+        <td>Electrical conduits in machine room are melting.</td>        <td class=pass>pass</td>        <td>Nazi</td>        <td>1967-11-04</td>    </tr>
+
+    <tr>
+        <td>short leg on process table</td>        <td class=notapplicable>notapplicable</td>        <td>Cruz</td>        <td>1964-02-17</td>    </tr>
+
+    <tr>
+        <td>temporary routing anomaly</td>        <td class=notselected>notselected</td>        <td>Baez</td>        <td>2012-02-19</td>    </tr>
+
+    <tr>
+        <td>short leg on process table</td>        <td class=fail>fail</td>        <td>Suzy</td>        <td>2014-05-17</td>    </tr>
+
+       <tbody>
+     </table>
     </div>
-
     <div class="right">
-         <center>
-            <canvas id="trChart" width="1000" height="700"></canvas>
-         </center>
+      <h2>Results Overview</h2>
+      <hr>
+      <table class="sortable" id="overview_table">
+        <thead>
+          <th>Result</th>
+          <th>Percentage</th>
+        </thead>
+        <tbody>
+            <tr>
+              <td class=error>error</td>
+              <td>23.0%</td>
+            </tr>
+            <tr>
+              <td class=notselected>notselected</td>
+              <td>9.0%</td>
+            </tr>
+            <tr>
+              <td class=notapplicable>notapplicable</td>
+              <td>23.0%</td>
+            </tr>
+            <tr>
+              <td class=pass>pass</td>
+              <td>14.0%</td>
+            </tr>
+            <tr>
+              <td class=fail>fail</td>
+              <td>18.0%</td>
+            </tr>
+            <tr>
+              <td class=fixed>fixed</td>
+              <td>14.0%</td>
+            </tr>
+        </tbody>
+      </table>
+
+      <br><br><br>
+
+      <center>
+        <canvas id="myChart" width="350" height="350"></canvas>
+      </center>
     </div>
- </body>
+  </body>
 </html>
+
+<script type="text/javascript">
+      function createChart() {
+      var data = [
+          {
+            value:  5,
+            color: "#997D65",
+            label: "error"
+          },
+          {
+            value:  2,
+            color: "#CCCCCC",
+            label: "notselected"
+          },
+          {
+            value:  5,
+            color: "#EAD376",
+            label: "notapplicable"
+          },
+          {
+            value:  3,
+            color: "#A6EAAA",
+            label: "pass"
+          },
+          {
+            value:  4,
+            color: "#FE6A6A",
+            label: "fail"
+          },
+          {
+            value:  3,
+            color: "#B0CFFE",
+            label: "fixed"
+          },
+      ];
+      var cht = document.getElementById('myChart');
+      var ctx = cht.getContext('2d');
+      var myChart = new Chart(ctx).Doughnut(data);
+
+    }
+</script>

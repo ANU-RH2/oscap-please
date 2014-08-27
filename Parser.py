@@ -1,18 +1,27 @@
-__author__ = 'sauski'
+#                  _____  _______  ______ _______ _______  ______
+#                 |_____] |_____| |_____/ |______ |______ |_____/
+#                 |       |     | |    \_ ______| |______ |    \_
+#
+#       Written By: Theodore Olsauskas-Warren - u5195918
+#               In: August 2014
+#          Version: MVP
+#
+# This is a simple command line parsing module, basically it is handed the
+# user inputted command line arguments and then generated an SQLtoXML options
+# object from them. It is my hope that this is the level where the disparate
+# OSP components will come together. Currently there are some edge cases that
+# are missed on the parsing, it is my intention that when OSP comes together
+# to move to a library based parsing system.
+#TODO include other OSP component inputs.
 
-# Command line option parsing object.
-# Basically you hand it the input string and it
-# gives you back a list of file names
-# This is also responsible for throwing errors
-# for bad input etc.
-
-#TODO HAS ONLY BEEN EDITED FOR XMLTOSQL
+__author__ = 'u5195918'
 import os.path
-
-import OSP.XMLtoSQL.Options
+import XMLtoSQL.Options
 
 
 def print_help(arguments):
+    # Arguments is never technically used, but is needed here anyway
+    # as the function is picked blindly from a dictionary
     print 'usage: OSP.py [-h] [-i file [file ...] ' \
           '[-db dbname] [-dbuser dbuser]]'
     print ''
@@ -30,6 +39,7 @@ def print_help(arguments):
     print '  -i          list of files to insert'
     print '  -db         connect to specific database'
     print '  -dbuser     specify database username'
+    quit()
 
 
 def invalid_argument(argument):
@@ -81,7 +91,7 @@ def input_files(arguments):
         i += 1
 
     # Create an options object to hand back
-    options = OSP.XMLtoSQL.Options.Options(files, database_name, database_user)
+    options = XMLtoSQL.Options.Options(files, database_name, database_user)
     return options
 
 inputs = {'-h': print_help,

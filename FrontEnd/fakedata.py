@@ -31,9 +31,10 @@ definition_names = ["50% of the manual is in .pdf readme files",
 
 results = ["notapplicable", "notselected", "pass", "fixed", "error", "fail"]
 
+
 def get_MVP():
     mvp = []
-    for x in range(random.randint(2, 6)):
+    for x in range(random.randint(15, 25)):
         random.shuffle(machine_names)
         machine_name = machine_names[0]
         random.shuffle(definition_names)

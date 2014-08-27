@@ -1,37 +1,65 @@
-* {
- font-family: Arial;
-}
+/* ,o888888o.       d888888o.   8 888888888o
+ . 8888     `88.   .`8888:' `88. 8 8888    `88.
+,8 8888       `8b  8.`8888.   Y8 8 8888     `88
+88 8888        `8b `8.`8888.     8 8888     ,88
+88 8888         88  `8.`8888.    8 8888.   ,88'
+88 8888         88   `8.`8888.   8 888888888P'
+88 8888        ,8P    `8.`8888.  8 8888
+`8 8888       ,8P 8b   `8.`8888. 8 8888
+ ` 8888     ,88'  `8b.  ;8.`8888 8 8888
+    `8888888P'     `Y8888P ,88P' 8 8888
+
+8888888b.                                    888
+888   Y88b                                   888
+888    888                                   888
+888   d88P .d88b.  88888b.   .d88b.  888d888 888888
+8888888P" d8P  Y8b 888 "88b d88""88b 888P"   888
+888 T88b  88888888 888  888 888  888 888     888
+888  T88b Y8b.     888 d88P Y88..88P 888     Y88b.
+888   T88b "Y8888  88888P"   "Y88P"  888      "Y888
+                   888
+ .d8888b.          888                                888
+d88P  Y88b         888                                888
+888    888                                            888
+888         .d88b.  88888b.   .d88b.  888d888 8888b.  888888 .d88b.  888d888
+888  88888 d8P  Y8b 888 "88b d8P  Y8b 888P"      "88b 888   d88""88b 888P"
+888    888 88888888 888  888 88888888 888    .d888888 888   888  888 888
+Y88b  d88P Y8b.     888  888 Y8b.     888    888  888 Y88b. Y88..88P 888
+ "Y8888P88  "Y8888  888  888  "Y8888  888    "Y888888  "Y888 "Y88P"  888
+
+## AUTHOR AND PROGRAM INFO ####################################################
+
+Author:  Alex Jansons <u5183898@anu.edu.au>
+Version: 1.0 (MVP)
+Created: 28/07/2014
+
+This is the style sheet for report.mako!
+
+Please see the report.mako header for more information.
+
+*/
 
 h1 {
     text-align: center;
-    color: rgb(245,140,25);
     font-size:250%
 }
 
 h2 {
     text-align: center;
-    color: rgb(245,140,25);
     font-size:200%
 }
 
 h3 {
     text-align: center;
-    color: rgb(245,140,25);
-    font-size:150%
-}
-
-p {
-    text-align: center;
-    color: red;
-    font-size:100%
+    font-size:120%
 }
 
 body {
-    background-color: rgb(64,64,64);
+    font-family: "Lucida Grande", "Lucida Sans Unicode", "Helvetica", "Arial", "Verdana", "sans-serif";
+    font-weight: lighter;
 }
 
 td {
-    color: white;
 }
 
 td.fail {
@@ -59,23 +87,25 @@ td.fixed {
 }
 
 table {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     width: 100%;
     border-collapse: collapse;
 }
 
 td, th {
-    font-size: 2em;
-    border: 1px solid white;
+    font-size: 1em;
+    border: 1px solid black;
     padding: 3px 7px 2px 7px;
+}
+
+table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
+    content: " \25B4\25BE"
 }
 
 th {
     text-align: left;
     padding-top: 5px;
     padding-bottom: 4px;
-    background-color: rgb(255,137,81);
-    color: #ffffff;
+    background-color: rgb(3,137,204);
 }
 
 .left{

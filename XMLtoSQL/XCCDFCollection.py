@@ -1,10 +1,25 @@
-from OSP.XMLtoSQL import Definition, Collection
+#                    _     _ _______ _______ ______  _______
+#                     \___/  |       |       |     \ |______
+#                    _/   \_ |_____  |_____  |_____/ |
+#
+#   _______  _____                _______ _______ _______ _____  _____  __   _
+#   |       |     | |      |      |______ |          |      |   |     | | \  |
+#   |_____  |_____| |_____ |_____ |______ |_____     |    __|__ |_____| |  \_|
+#
+#       Written By: Theodore Olsauskas-Warren - u5195918
+#               In: August 2014
+#          Version: MVP
+#
+# This file contains the XCCDF implementation of the collection class. It
+# contains the logic for extracting the MVP definition information from a
+# Extensible Configuration Checklist Description Format (XCCDF). It will also
+# uniquely identify these types of files (at the moment this is achieved by
+# checking for a TestResult child of the XML tree root, good enough for now).
+# Definition titles and descriptions are found by performing a reverse lookup
+# on their results.
 
-__author__ = 'Sauski'
-# A collection is a file basically
-# They are uniquely identified by the date they were
-# run as well as the computer name.
-# XCCDF Collection
+__author__ = 'u5195918'
+from XMLtoSQL import Definition, Collection
 
 
 class XCCDFCollection(Collection.Collection):

@@ -1,16 +1,30 @@
-from OSP.XMLtoSQL import Definition, Collection
+#                           _____  _    _ _______
+#                          |     |  \  /  |_____| |
+#                          |_____|   \/   |     | |_____
+#
+#   _______  _____                _______ _______ _______ _____  _____  __   _
+#   |       |     | |      |      |______ |          |      |   |     | | \  |
+#   |_____  |_____| |_____ |_____ |______ |_____     |    __|__ |_____| |  \_|
+#
+#       Written By: Theodore Olsauskas-Warren - u5195918
+#               In: August 2014
+#          Version: MVP
+#
+# This file contains the OVAL version of the collection object. This object
+# contains the logic for extracting the required definition information from
+# an XML file matching the Open Vulnerability and Assessment Language OVAL
+# specifications. Results are found by performing a forward lookup from each
+# of the defined definitions in the first part of the document.
+# TODO Re-work the file identification function for more accurate identification
 
-__author__ = 'Sauski'
-# A collection is a file basically
-# They are uniquely identified by the date they were
-# run as well as the computer name.
+__author__ = 'u5195918'
+from XMLtoSQL import Definition, Collection
 
 
 class OVALCollection(Collection.Collection):
 
     def __init__(self, xml_root):
         Collection.Collection.__init__(self, xml_root)
-
 
     def __str__(self):
         return "(Machine Name: " + self.machine_name + \
@@ -29,11 +43,11 @@ class OVALCollection(Collection.Collection):
         # Build date
         # Dates in this format look something like 2014-07-21T02:46:46
         formatted_date = Definition.Definition.Date(self.date[17:19],
-                                                        self.date[14:16],
-                                                        self.date[11:13],
-                                                        self.date[8:10],
-                                                        self.date[5:7],
-                                                        self.date[:4])
+                                                    self.date[14:16],
+                                                    self.date[11:13],
+                                                    self.date[8:10],
+                                                    self.date[5:7],
+                                                    self.date[:4])
 
         self.date = formatted_date
 

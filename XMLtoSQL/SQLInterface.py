@@ -6,9 +6,9 @@
 #        |   | \  |    |    |______ |_____/ |______ |_____| |       |______
 #      __|__ |  \_|    |    |______ |    \_ |       |     | |_____  |______
 #
-#       Written By: Theodore Olsauskas-Warren
+#       Written By: Theodore Olsauskas-Warren - u5195918
 #               In: August 2014
-#
+#          Version: MVP
 #
 # Object defines interactions with SQL database, handles opening, closing
 # and inserting information. Uses the schema defined within the definition
@@ -21,87 +21,95 @@ __author__ = 'u5195918'
 import psycopg2
 from XMLtoSQL.Definition import Definition
 
+
 class SQLInterface:
     def __init__(self, database_name, database_user):
         # Attempt to connect to provided database
         try:
             connection_string = 'dbname=' + database_name + \
                                 ' user=' + database_user
-            self.conn = psycopg2.connect(connection_string)
+            self.connection = psycopg2.connect(connection_string)
         #TODO Figure out which exception exactly
         except Exception:
             print ("Failure Connecting to Database, Check that Database "
                    + database_name + " exists and user " + database_user
                    + " can connect")
-            exit()
-        self.cur = self.conn.cursor()
+            quit()
+        self.cursor = self.connection.cursor()
         print('Connected to Database')
 
     def create_table(self, schema):
         # The table is always called osp, non-negotiable.
         # Check if the table already exists.
-        execution_string = 'select count(*) from pg_class where  \
+        select_statement = 'select count(*) from pg_class where  \
                            relname=\'osp\' and relkind=\'r\''
 
         try:
-            self.cur.execute(execution_string)
+            self.cursor.execute(select_statement)
         except psycopg2.IntegrityError, e:
             print 'Failure testing if table already exists'
             print e.pgerror
 
-        rows = self.cur.fetchall()
+        rows = self.cursor.fetchall()
 
         # Does one exist?
         if rows[0][0] != 1:
             # No it doesn't, Create it.
-            # Build execution string from schema
-            execution_string = 'create table osp('
+            # Begin building execution string from schema
+            create_table = 'create table osp('
 
-            for key, value in Definition.schema:
-                execution_string += key + ' ' + value + ', '
+            key_values = ''
+            for key, value in schema:
+                key_values += key + ' ' + value + ', '
 
             # Remove trailing comma and close
-            execution_string = execution_string[:-2] + ');'
+            execution_string = create_table + key_values[:-2] + ');'
 
             try:
-                self.cur.execute(execution_string)
+                self.cursor.execute(execution_string)
             except psycopg2.IntegrityError, e:
                 print 'Error Creating Table'
                 print e.pgerror
                 quit()
 
             print 'Table Created'
-            self.conn.commit()
+            self.connection.commit()
         else:
             print 'Table osp already exists'
 
     def insert_into_table(self, definition):
         # Insert Definition into Database
-        execution_string = 'insert into osp('
+        insert_statement = 'insert into osp('
 
         # Loop through schema values, ignoring the last as it is the
         # primary key
+        keys = ''
         for key, value in Definition.schema[:-1]:
-                execution_string += key + ', '
+                keys += key + ', '
         # Remove Trailing Comma and close
-        execution_string = execution_string[:-2] + ')'
+        keys = keys[:-2] + ')'
 
-        execution_string += ' values( '
-
+        values_statement = ' values( '
+        values = ''
         for key, value in Definition.schema[:-1]:
-            execution_string += \
+            values += \
                 '\'' + self.sanitize(vars(definition).get(key)) + '\', '
 
         # Remove Trailing Comma and close
-        execution_string = execution_string[:-2] + ')'
+        values = values[:-2] + ')'
+
+        # Build execution string
+        execution_string = insert_statement + keys\
+                                            + values_statement \
+                                            + values
         try:
-            self.cur.execute(execution_string)
+            self.cursor.execute(execution_string)
         except psycopg2.IntegrityError, e:
             print execution_string
             print 'Error inserting row'
             print e.pgerror
 
-        self.conn.commit()
+        self.connection.commit()
 
     @staticmethod
     def sanitize(string):
