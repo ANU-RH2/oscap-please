@@ -41,19 +41,23 @@ def get_MVP():
         random.shuffle(results)
         result = results[0]
 
-        date = datetime.date(random.randint(1949, 2014), random.randint(1, 12), random.randint(1, 25))
+        date = datetime.datetime(random.randint(1949, 2014), random.randint(1, 12), random.randint(1, 25))
 
         mvp.append({"machine_name"    : machine_name,
                     "definition_name" : definition_name,
                     "result"          : result,
                     "date"            : date })
-
-    return mvp
+    options = {'db_username': 'postgres',
+               'start_date': None,
+               'end_date': None,
+               'db_dbname': 'osp'}
+    return (options, mvp)
         
 
 if __name__ == "__main__":
     results = get_MVP()
-    for result in results:
+    print results[0]
+    for result in results[1]:
         s = ""
         for key in result.iterkeys():
             s += key + ": '" + str(result[key]) + "' "

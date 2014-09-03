@@ -7,10 +7,12 @@ import config
 import sql
 
 # This provides a basic list of machines, definitions,
-# and the results on a given day
-# The output is a list of dictionaries.
+# and the results on a given day.
+# Also gives the configuration used to generate the output.
+# The output is a a pair containing the configuration as a dict,
+# and a list of dictionaries, where each corresponds to one test.
 
-# Example record:
+# Example test record:
 # {'date': datetime.date(2014, 8, 4),
 #   'machine_name': 'ejo-port',
 #   'definition_name': 'Enterprise Quality Solution',

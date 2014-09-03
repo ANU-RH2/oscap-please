@@ -63,5 +63,7 @@ def get_MVP():
                          "result" : r[2],
                          "date" : r[3], }
                 rval.append(rdict)
-
-        return rval
+        options = {}
+        for (k, v) in config.options.items():
+                options[k]=v.value
+        return (options, rval)

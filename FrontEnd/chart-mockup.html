@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>oscap-please: Report</title>
+	<!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+	<script type="text/javascript" src="Chart.js"></script> 
+</head>
+<body>
+	
+	<div id="report-title" style="background-color:#899FDD; font-family: Arial;" >
+		<h1 style="color: rgb(64,64,64)">Report 10/08/2014</h1>
+	
+	</div>
+	
+	<canvas id="lineChart" width="800" height="500" style="border:1px solid #000000;"></canvas>
+	
+	<br>
+	
+	<button onclick="barPassRate();">Bar:Pass Rate</button>
+	
+	<script>
+		// Get canvas and context
+		canv = document.getElementById("lineChart", {pointDotStrokeWidth : 1});
+		context = canv.getContext("2d");
+		
+		// Default chart to show
+		window.onload = linePassRate;
+
+		//Resize canvas to fit screen
+		context.canvas.width = window.innerWidth - 40;
+		context.canvas.height = window.innerHeight - 150;
+
+		// Data to use
+		var data = {
+		    labels: ["9/6/14", "9/7/14", "9/8/14"],
+		    datasets: [
+		        {
+		            label: "passrate",
+		            fillColor: "rgba(0,0,0,0)",
+		            strokeColor: "#899FDD",
+		            pointColor: "rgb(64,64,64)",
+		            pointStrokeColor: "#fff",
+		            pointHighlightFill: "#fff",
+		            pointHighlightStroke: "rgba(220,220,220,1)",
+		            data: [65, 59, 80]
+		        }
+		    ]
+		};
+
+		// Demos line graph
+		function linePassRate() {
+			var historicResults = new Chart(context).Line(data);
+		}
+
+		// Demo of bar graph
+		function barPassRate() {
+			var historicResults = new Chart(context).Bar(data);
+		}
+		
+	</script>
+</body>
+</html>
