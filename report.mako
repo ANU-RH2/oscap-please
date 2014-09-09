@@ -32,8 +32,9 @@ Y88b  d88P Y8b.     888  888 Y8b.     888    888  888 Y88b. Y88..88P 888
 ## AUTHOR AND PROGRAM INFO ####################################################
 
 Author:  Alex Jansons <u5183898@anu.edu.au>
-Version: 1.0 (MVP)
+Version: 1.1
 Created: 28/07/2014
+Modified 09/09/2014 by Thomas Antioch <u5006059@anu.edu.au>
 
 Welcome the report generator of the OhScapPlease (OSP) package! The aim of this
 program is to create a HTML report from XML data extracted from a SQL database
@@ -88,7 +89,7 @@ Some suggested/planned features for future versions include:
     
    ## Do our module imports
       import datetime
-      import fakedata
+      import  ospdata
 
    ## Get the date, so we can record when the report was generated
       def getDate():
@@ -99,31 +100,29 @@ Some suggested/planned features for future versions include:
    ## thought of as essentially a row in a table. Where the key is the field
    ## and the value is, well, the value for that field. And since data is a
    ## list of rows, we can easily turn it into a table!
-      data = fakedata.get_MVP()
+      data = ospdata.get_MVP()
     
    ## We're going to count how many results there are, to work out %'s later
    ## Basically, it's the sum of resultcount's values.
       totalresults = 0
     
-   ## resultcount is a dictionary that records how many fails, passes, etc
-   ## there are. Key = result, Value = number of that result
+   ## Accumulates pass/total test numbers for each scan date
       resultcount = {}
       for i in data:
-        if i['result'] in resultcount:
-          resultcount[i['result']] = resultcount[i['result']] + 1
+        if i['date'] not in resultcount:
+          resultcount[i['date']] = (0,0)
+       
+        if i['result'] == "Pass":
+          resultcount[i['date']] = (resultcount[i['date']][0] + 1, resultcount[i['date']][1] +1)
         else:
-          resultcount[i['result']] = 1
-        totalresults = totalresults + 1
+          resultcount[i['date']] = (resultcount[i['date']][0], resultcount[i['date']][1] + 1)
 
-   ## Colours for the results. I just picked some pastels I think represent
-   ## the results. They'll be used for the chart, and the table cell colours.
-   ## TODO: Change to Red, Green, Grey once we're down to 3 result types.
-      resultcolours = {'fail': '#FE6A6A',
-                       'error': '#997D65',
-                       'notapplicable': '#EAD376',
-                       'notselected': '#CCCCCC',
-                       'pass': '#A6EAAA',
-                       'fixed': '#B0CFFE'}
+      # Works out pass/non pass rate and orders by date
+      sorted_results = []
+      for key, value in resultcount.iteritems():
+        sorted_results.append((key, round((value[0]/float(value[1])),2)*100))
+      sorted_results.sort()
+
 %>
 ##
 ## HELPER FUNCTIONS ###########################################################
@@ -161,11 +160,14 @@ Some suggested/planned features for future versions include:
     <h1>OSP Report</h1>
     <h3>Generated at ${getDate()}</h2>
 
+    <center>
+      <h2> Historical Pass Rate</h2>
+      <canvas id="myChart" width="800" height="600"></canvas>
+    </center>
     <br>
-
     <div class="left">
       ## Here we print the main table of the result data
-      <h2>Definition Results</h2>
+      <h3>Definition Results</h3>
       <hr>
       <table class="sortable" id="def_table">
         <thead>
@@ -190,7 +192,7 @@ Some suggested/planned features for future versions include:
     </div>
     ## In the right column, we have our pie chart and result over table
     <div class="right">
-      <h2>Results Overview</h2>
+      <h3>Results Overview</h3>
       <hr>
       <table class="sortable" id="overview_table">
         <thead>
@@ -204,7 +206,7 @@ Some suggested/planned features for future versions include:
               ## There seems to be an issue with rounding here, I think it
               ## has something to do with the difference between python
               ## two and 3. TODO: Fix this
-              <td>${round((resultcount[i]/float(totalresults)),2)*100}%</td>
+              <td>${round((resultcount[i][0]/float(resultcount[i][1])),2)*100}%</td>
             </tr>
           % endfor
         </tbody>
@@ -212,9 +214,7 @@ Some suggested/planned features for future versions include:
 
       <br><br><br>
 
-      <center>
-        <canvas id="myChart" width="350" height="350"></canvas>
-      </center>
+
     </div>
   </body>
 </html>
@@ -222,18 +222,36 @@ Some suggested/planned features for future versions include:
 ## Here we define a javascript function that'll make our chart
 <script type="text/javascript">
       function createChart() {
-      var data = [
-        % for i in resultcount:
-          {
-            value:  ${resultcount[i]},
-            color: "${resultcolours[i]}",
-            label: "${i}"
-          },
-        % endfor
-      ];
+        var data = {
+          labels: [
+          %for i in sorted_results: 
+            "${i[0]}",
+          % endfor
+          ],
+          datasets: [
+            {
+              label: "passrate",
+              fillColor: "rgba(0,0,0,0)",
+              strokeColor: "#899FDD",
+              pointColor: "rgb(64,64,64)",
+              pointStrokeColor: "#fff",
+              pointHighlightFill: "#fff",
+              pointHighlightStroke: "rgba(220,220,220,1)",
+              data: [
+              % for i in sorted_results:
+                ${i[1]},
+              % endfor
+              ]
+            }
+          ]
+        };
       var cht = document.getElementById('myChart');
       var ctx = cht.getContext('2d');
-      var myChart = new Chart(ctx).Doughnut(data);
 
+      //Resize canvas to fit screen
+      ctx.canvas.width = window.innerWidth * 0.9;
+      ctx.canvas.height = window.innerHeight * 0.5;
+
+      var myChart = new Chart(ctx).Line(data);
     }
 </script>

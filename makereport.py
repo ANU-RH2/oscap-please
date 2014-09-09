@@ -35,7 +35,7 @@ Created: 28/07/2014
 
 This is just a simple program to render the mako template,
 using: #python makereport.py
-then just open write2me.html.
+then just open report.html.
 
 Please see the report.mako header for more information.
 
@@ -47,10 +47,10 @@ def renderTemplate(file):
     template = Template(filename = file, input_encoding = 'utf-8')
     return template.render()
 
-if __name__ == '__main__':
+def gen_report():
     ## TODO: Allow user to specify output file name, add prompt if file already
     ## exists. This would probably be contained in the config file
-    f = open('write2me.html', 'w+')
+    f = open('report.html', 'w+')
     template = Template(filename = 'report.mako')
     ## Convert the rendered report from a bytes object to a string, so we can
     ## write it to the file.
@@ -58,3 +58,8 @@ if __name__ == '__main__':
     f.write(output)
     f.close()
 
+
+if __name__ == '__main__':
+    gen_report();
+
+    

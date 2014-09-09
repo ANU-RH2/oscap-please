@@ -18,7 +18,8 @@ import sql
 #   'definition_name': 'Enterprise Quality Solution',
 #   'result': 'Failed'}
 def get_MVP():
-    return sql.get_MVP()
+    #Temp: Strip config data since Alex' work doesn't expect it yet
+    return sql.get_MVP()[1]
 
 if __name__ == "__main__":
     for r in get_MVP():

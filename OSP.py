@@ -6,15 +6,10 @@
 __author__ = 'u5195918'
 import Parser
 from XMLtoSQL import Controller
+import makereport
 import sys
 
 
 # Lets do some command line parsing!
-options = Parser.parse(sys.argv)
-print options
-controller = Controller.Controller(options)
-
-controller.extract_and_insert()
-
-
+Parser.parse(sys.argv)
 

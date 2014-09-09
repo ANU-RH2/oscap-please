@@ -5,6 +5,7 @@
 #       Written By: Theodore Olsauskas-Warren - u5195918
 #               In: August 2014
 #          Version: MVP
+#          Modified: 09/09/2014 by Thomas Antioch - u5006059
 #
 # This is a simple command line parsing module, basically it is handed the
 # user inputted command line arguments and then generated an SQLtoXML options
@@ -17,26 +18,29 @@
 __author__ = 'u5195918'
 import os.path
 import XMLtoSQL.Options
+from XMLtoSQL import Controller
+import makereport
 
 
 def print_help(arguments):
     # Arguments is never technically used, but is needed here anyway
     # as the function is picked blindly from a dictionary
-    print 'usage: OSP.py [-h] [-i file [file ...] ' \
+    print 'usage: OSP.py [-h | -r | -i file [file ...] ' \
           '[-db dbname] [-dbuser dbuser]]'
     print ''
-    print 'Insert openscap audit results into database'
+    print 'Insert OpenSCAP audit results into database and generate reports'
     print ''
+    print ' -h           show this help message and exit'
+    print ' -i           insert reports into database (can '
+    print ' -r           generate a report from database'
     print 'positional arguments:'
     print '  file        an openscap XML audit result file'
     print '  dbname      name of the PSQL database to connect to, ' \
-          'default is OSP'
+          'default is osp'
     print '  dbuser      user to connect to database through, default is' \
           ' postgres'
     print ''
     print 'optional arguments:'
-    print '  -h          show this help message and exit'
-    print '  -i          list of files to insert'
     print '  -db         connect to specific database'
     print '  -dbuser     specify database username'
     quit()
@@ -56,7 +60,7 @@ def input_files(arguments):
     # List of files passed in
     files = []
     # Set Defaults
-    database_name = 'OSP'
+    database_name = 'osp'
     database_user = 'postgres'
     # Loop over the files
     i = 2
@@ -92,10 +96,15 @@ def input_files(arguments):
 
     # Create an options object to hand back
     options = XMLtoSQL.Options.Options(files, database_name, database_user)
-    return options
+    controller = Controller.Controller(options)
+    controller.extract_and_insert()
+
+def make_report(arguments):
+    makereport.gen_report();
 
 inputs = {'-h': print_help,
-          '-i': input_files}
+          '-i': input_files,
+          '-r': make_report}
 
 
 def parse(arguments):
