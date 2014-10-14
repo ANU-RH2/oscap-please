@@ -1,0 +1,6 @@
+2014-08-15 01:34:17: Log width cannot be set to 20, it must be greater than 40.
+                     it has been automatically set to the default of 80 
+2014-08-15 01:34:17: Logging Commenced, File Verbosity: 5 
+2014-08-15 01:34:17: Relation OSP already exists in database Collections. 
+2014-08-15 01:34:17: FATAL: Error connecting to database OSP. Please check that
+                     it is available and that user postgres can connect. 

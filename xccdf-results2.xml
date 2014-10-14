@@ -1,0 +1,1758 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Benchmark xmlns="http://checklists.nist.gov/xccdf/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="FEDORA" resolved="1" xml:lang="en-US">
+  <status date="2014-02-27">draft</status>
+  <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Guide to the Secure Configuration of Fedora</title>
+  <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">This guide presents a catalog of security-relevant configuration
+settings for Fedora operating system formatted in the eXtensible Configuration
+Checklist Description Format (XCCDF).
+<br xmlns="http://www.w3.org/1999/xhtml"/>
+<br xmlns="http://www.w3.org/1999/xhtml"/>
+Providing system administrators with such guidance informs them how to securely
+configure systems under their control in a variety of network roles.  Policy
+makers and baseline creators can use this catalog of settings, with its
+associated references to higher-level security control catalogs, in order to
+assist them in security baseline creation.  This guide is a <i xmlns="http://www.w3.org/1999/xhtml">catalog, not a
+checklist,</i> and satisfaction of every item is not likely to be possible or
+sensible in many operational scenarios.  However, the XCCDF format enables
+granular selection and adjustment of settings, and their association with OVAL
+and OCIL content provides an automated checking capability.  Transformations of
+this document, and its associated automated checking content, are capable of
+providing baselines that meet a diverse set of policy objectives.  Some example
+XCCDF <i xmlns="http://www.w3.org/1999/xhtml">Profiles</i>, which are selections of items that form checklists and
+can be used as baselines, are available with this guide.  They can be
+processed, in an automated fashion, with tools that support the Security
+Content Automation Protocol (SCAP).
+</description>
+  <notice xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US" id="terms_of_use">Do not attempt to implement any of the settings in
+this guide without first testing them in a non-operational environment. The
+creators of this guidance assume no responsibility whatsoever for its use by
+other parties, and makes no guarantees, expressed or implied, about its
+quality, reliability, or any other characteristic.</notice>
+  <front-matter xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The SCAP Security Guide Project<br xmlns="http://www.w3.org/1999/xhtml"/>https://fedorahosted.org/scap-security-guide</front-matter>
+  <rear-matter xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Red Hat and Fedora are either registered
+trademarks or trademarks of Red Hat, Inc. in the United States and other
+countries. All other names are registered trademarks or trademarks of their
+respective companies.</rear-matter>
+  <platform idref="cpe:/o:fedoraproject:fedora:21"/>
+  <platform idref="cpe:/o:fedoraproject:fedora:20"/>
+  <platform idref="cpe:/o:fedoraproject:fedora:19"/>
+  <version>0.0.4</version>
+  <model system="urn:xccdf:scoring:default"/>
+  <Profile id="common">
+    <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Common Profile for General-Purpose Fedora Systems</title>
+    <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">This profile contains items common to general-purpose Fedora installations.</description>
+    <select idref="disable_prelink" selected="true"/>
+    <select idref="ensure_gpgcheck_globally_activated" selected="true"/>
+    <select idref="ensure_gpgcheck_never_disabled" selected="true"/>
+    <select idref="file_permissions_library_dirs" selected="true"/>
+    <select idref="file_ownership_library_dirs" selected="true"/>
+    <select idref="file_permissions_binary_dirs" selected="true"/>
+    <select idref="file_ownership_binary_dirs" selected="true"/>
+    <select idref="no_direct_root_logins" selected="true"/>
+    <select idref="securetty_root_login_console_only" selected="true"/>
+    <select idref="restrict_serial_port_logins" selected="true"/>
+    <select idref="no_uidzero_except_root" selected="true"/>
+    <select idref="no_empty_passwords" selected="true"/>
+    <select idref="no_hashes_outside_shadow" selected="true"/>
+    <select idref="no_netrc_files" selected="true"/>
+    <select idref="accounts_password_minlen_login_defs" selected="true"/>
+    <select idref="accounts_minimum_age_login_defs" selected="true"/>
+    <select idref="accounts_maximum_age_login_defs" selected="true"/>
+    <select idref="accounts_password_warn_age_login_defs" selected="true"/>
+    <select idref="service_ntpd_enabled" selected="true"/>
+    <select idref="ntpd_specify_remote_server" selected="true"/>
+    <select idref="sshd_disable_root_login" selected="true"/>
+    <select idref="sshd_disable_empty_passwords" selected="true"/>
+    <select idref="sshd_set_idle_timeout" selected="true"/>
+    <select idref="sshd_set_keepalive" selected="true"/>
+    <refine-value idref="var_accounts_password_minlen_login_defs" selector="12"/>
+    <refine-value idref="var_accounts_minimum_age_login_defs" selector="7"/>
+    <refine-value idref="var_accounts_maximum_age_login_defs" selector="90"/>
+    <refine-value idref="var_accounts_password_warn_age_login_defs" selector="7"/>
+    <refine-value idref="sshd_idle_timeout_value" selector="5_minutes"/>
+  </Profile>
+  <Value id="conditional_clause" operator="equals" type="string">
+    <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">A conditional clause for check statements.</title>
+    <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">A conditional clause for check statements.</description>
+    <value>This is a placeholder.</value>
+  </Value>
+  <Group id="intro">
+    <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Introduction</title>
+    <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US"><!-- purpose and scope of guidance -->
+The purpose of this guidance is to provide security configuration
+recommendations and baselines for the Fedora operating system.
+Recommended settings for the basic operating system are provided,
+as well as for many network services that the system can provide
+to other systems.
+<!-- audience -->The guide is intended for system administrators. Readers are assumed to
+possess basic system administration skills for Unix-like systems, as well
+as some familiarity with Fedora's documentation and administration
+conventions. Some instructions within this guide are complex.
+All directions should be followed completely and with understanding of
+their effects in order to avoid serious adverse effects on the system
+and its security.
+</description>
+    <Group id="general-principles">
+      <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">General Principles</title>
+      <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+The following general principles motivate much of the advice in this
+guide and should also influence any configuration decisions that are
+not explicitly covered.
+</description>
+      <Group id="principle-encrypt-transmitted-data">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Encrypt Transmitted Data Whenever Possible</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Data transmitted over a network, whether wired or wireless, is susceptible
+to passive monitoring. Whenever practical solutions for encrypting
+such data exist, they should be applied. Even if data is expected to
+be transmitted only over a local network, it should still be encrypted.
+Encrypting authentication data, such as passwords, is particularly
+important. Networks of Fedora machines can and should be configured
+so that no unencrypted authentication data is ever transmitted between
+machines.
+</description>
+      </Group>
+      <Group id="principle-minimize-software">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Minimize Software to Minimize Vulnerability</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+The simplest way to avoid vulnerabilities in software is to avoid
+installing that software. On Fedora, the RPM Package Manager (originally
+Red Hat Package Manager, abbreviated RPM) allows for careful management of
+the set of software packages installed on a system. Installed software
+contributes to system vulnerability in several ways. Packages that
+include setuid programs may provide local attackers a potential path to
+privilege escalation. Packages that include network services may give
+this opportunity to network-based attackers. Packages that include
+programs which are predictably executed by local users (e.g. after
+graphical login) may provide opportunities for trojan horses or other
+attack code to be run undetected. The number of software packages
+installed on a system can almost always be significantly pruned to include
+only the software for which there is an environmental or operational need.
+</description>
+      </Group>
+      <Group id="principle-separate-servers">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Run Different Network Services on Separate Systems</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Whenever possible, a server should be dedicated to serving exactly one
+network service. This limits the number of other services that can
+be compromised in the event that an attacker is able to successfully
+exploit a software flaw in one network service.
+</description>
+      </Group>
+      <Group id="principle-use-security-tools">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Configure Security Tools to Improve System Robustness</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Several tools exist which can be effectively used to improve a system's
+resistance to and detection of unknown attacks. These tools can improve
+robustness against attack at the cost of relatively little configuration
+effort. In particular, this guide recommends and discusses the use of
+Iptables for host-based firewalling, SELinux for protection against
+vulnerable services, and a logging and auditing infrastructure for
+detection of problems.
+</description>
+      </Group>
+      <Group id="principle-least-privilege">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Least Privilege</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Grant the least privilege necessary for user accounts and software to perform tasks.
+For example, <xhtml:code>sudo</xhtml:code> can be implemented to limit authorization to super user
+accounts on the system only to designated personnel. Another example is to limit
+logins on server systems to only those administrators who need to log into them in
+order to perform administration tasks. Using SELinux also follows the principle of
+least privilege: SELinux policy can confine software to perform only actions on the
+system that are specifically allowed. This can be far more restrictive than the
+actions permissible by the traditional Unix permissions model.
+</description>
+      </Group>
+    </Group>
+    <Group id="how-to-use">
+      <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">How to Use This Guide</title>
+      <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Readers should heed the following points when using the guide.
+</description>
+      <Group id="intro-read-sections-completely">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Read Sections Completely and in Order</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Each section may build on information and recommendations discussed in
+prior sections. Each section should be read and understood completely;
+instructions should never be blindly applied. Relevant discussion may
+occur after instructions for an action. 
+</description>
+      </Group>
+      <Group id="intro-test-non-production">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Test in Non-Production Environment</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+This guidance should always be tested in a non-production environment
+before deployment. This test environment should simulate the setup in
+which the system will be deployed as closely as possible.
+</description>
+      </Group>
+      <Group id="intro-root-shell-assumed">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Root Shell Environment Assumed</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Most of the actions listed in this document are written with the
+assumption that they will be executed by the root user running the
+<xhtml:code>/bin/bash</xhtml:code> shell. Commands preceded with a hash mark (#)
+assume that the administrator will execute the commands as root, i.e.
+apply the command via <xhtml:code>sudo</xhtml:code> whenever possible, or use
+<xhtml:code>su</xhtml:code> to gain root privileges if <xhtml:code>sudo</xhtml:code> cannot be
+used. Commands which can be executed as a non-root user are are preceded
+by a dollar sign ($) prompt.
+</description>
+      </Group>
+      <Group id="intro-formatting-conventions">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Formatting Conventions</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Commands intended for shell execution, as well as configuration file text,
+are featured in a <xhtml:code>monospace font</xhtml:code>. <i xmlns="http://www.w3.org/1999/xhtml">Italics</i> are used
+to indicate instances where the system administrator must substitute
+the appropriate information into a command or configuration file.
+</description>
+      </Group>
+      <Group id="intro-reboot-required">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Reboot Required</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+A system reboot is implicitly required after some actions in order to
+complete the reconfiguration of the system. In many cases, the changes
+will not take effect until a reboot is performed. In order to ensure
+that changes are applied properly and to test functionality, always
+reboot the system after applying a set of recommendations from this guide.
+</description>
+      </Group>
+    </Group>
+  </Group>
+  <Group id="system">
+    <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">System Settings</title>
+    <Group id="settings">
+      <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">General System Wide Configuration Settings</title>
+      <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The following sections contain information on
+various security-relevant configuration settings that in
+particular way modify the behaviour of the system as a whole.
+</description>
+      <Rule id="disable_prelink" selected="false" severity="low">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Prelinking Disabled</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+The prelinking feature changes binaries in an attempt to decrease their startup
+time. In order to disable it, change or add the following line inside the file
+<xhtml:code>/etc/sysconfig/prelink</xhtml:code>:
+<pre xmlns="http://www.w3.org/1999/xhtml">PRELINKING=no</pre>
+Next, run the following command to return binaries to a normal, non-prelinked
+state:
+<pre xmlns="http://www.w3.org/1999/xhtml"># /sbin/prelink -ua</pre>
+</description>
+        <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">CM-6(d)</reference>
+        <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">CM-6(3)</reference>
+        <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">SC-28</reference>
+        <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">SI-7</reference>
+        <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+The prelinking feature can interfere with the operation of checksum integrity
+tools (e.g. AIDE), because it modifies binaries to speed up their startup time.
+Also it makes the location of shared libraries very predictable, mitigating
+the efficiency of address space layout randomization (ASLR) protection mechanism.
+In addition, each upgrade of an application or a library requires prelink to be
+run again.
+</rationale>
+        <fix xmlns:xhtml="http://www.w3.org/1999/xhtml" system="urn:xccdf:fix:script:sh">#
+# Disable prelinking altogether
+#
+if grep -q ^PRELINKING /etc/sysconfig/prelink
+then
+  sed -i 's/PRELINKING.*/PRELINKING=no/g' /etc/sysconfig/prelink
+else
+  echo -e "\n# Set PRELINKING=no per security requirements" &gt;&gt; /etc/sysconfig/prelink
+  echo "PRELINKING=no" &gt;&gt; /etc/sysconfig/prelink
+fi
+
+#
+# Undo previous prelink changes to binaries
+#
+/usr/sbin/prelink -ua
+</fix>
+        <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+          <check-content-ref name="oval:ssg:def:133" href="ssg-fedora-oval.xml"/>
+        </check>
+      </Rule>
+    </Group>
+    <Group id="software">
+      <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Installing and Maintaining Software</title>
+      <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The following sections contain information on
+security-relevant choices during the initial operating system
+installation process and the setup of software
+updates.</description>
+      <Group id="updating">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Updating Software</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The <xhtml:code>yum</xhtml:code> command line tool is used to install and
+update software packages. The system also provides a graphical
+software update tool in the <b xmlns="http://www.w3.org/1999/xhtml">System</b> menu, in the <b xmlns="http://www.w3.org/1999/xhtml">Administration</b> submenu,
+called <b xmlns="http://www.w3.org/1999/xhtml">Software Update</b>.
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+Fedora systems contain an installed software catalog called
+the RPM database, which records metadata of installed packages.  Tools such as
+<xhtml:code>yum</xhtml:code> or the graphical <b xmlns="http://www.w3.org/1999/xhtml">Software Update</b> ensure usage of RPM
+packages for software installation.  This allows for insight into the current
+inventory of installed software on the system, and is highly recommended.
+</description>
+        <Rule id="ensure_gpgcheck_globally_activated" selected="false" severity="high">
+          <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">gpgcheck Enabled In Main Yum Configuration</title>
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The <xhtml:code>gpgcheck</xhtml:code> option should be used to ensure
+checking of an RPM package's signature always occurs prior to its
+installation. To configure yum to check package signatures before installing
+them, ensure the following line appears in <xhtml:code>/etc/yum.conf</xhtml:code> in
+the <xhtml:code>[main]</xhtml:code> section:
+<pre xmlns="http://www.w3.org/1999/xhtml">gpgcheck=1</pre>
+</description>
+          <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">SI-7</reference>
+          <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">MA-1(b)</reference>
+          <reference href="http://iase.disa.mil/cci/index.html">352</reference>
+          <reference href="http://iase.disa.mil/cci/index.html">663</reference>
+          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Ensuring the validity of packages' cryptographic signatures prior to
+installation ensures the provenance of the software and
+protects against malicious tampering.
+</rationale>
+          <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+            <check-content-ref name="oval:ssg:def:115" href="ssg-fedora-oval.xml"/>
+          </check>
+          <check system="ocil-transitional">
+            <check-export export-name="GPG checking is not enabled" value-id="conditional_clause"/>
+            <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To determine whether <xhtml:code>yum</xhtml:code> is configured to use <xhtml:code>gpgcheck</xhtml:code>,
+inspect <xhtml:code>/etc/yum.conf</xhtml:code> and ensure the following appears in the
+<xhtml:code>[main]</xhtml:code> section:
+<pre xmlns="http://www.w3.org/1999/xhtml">gpgcheck=1</pre>
+A value of <xhtml:code>1</xhtml:code> indicates that <xhtml:code>gpgcheck</xhtml:code> is enabled. Absence of a
+<xhtml:code>gpgcheck</xhtml:code> line or a setting of <xhtml:code>0</xhtml:code> indicates that it is
+disabled.
+</check-content>
+          </check>
+        </Rule>
+        <Rule id="ensure_gpgcheck_never_disabled" selected="false" severity="high">
+          <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">gpgcheck Enabled For All Yum Package Repositories</title>
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To ensure signature checking is not disabled for
+any repos, remove any lines from files in <xhtml:code>/etc/yum.repos.d</xhtml:code> of the form:
+<pre xmlns="http://www.w3.org/1999/xhtml">gpgcheck=0</pre>
+</description>
+          <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">SI-7</reference>
+          <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">MA-1(b)</reference>
+          <reference href="http://iase.disa.mil/cci/index.html">352</reference>
+          <reference href="http://iase.disa.mil/cci/index.html">663</reference>
+          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Ensuring all packages' cryptographic signatures are valid prior to
+installation ensures the provenance of the software and
+protects against malicious tampering.
+</rationale>
+          <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+            <check-content-ref name="oval:ssg:def:137" href="ssg-fedora-oval.xml"/>
+          </check>
+          <check system="ocil-transitional">
+            <check-export export-name="GPG checking is disabled" value-id="conditional_clause"/>
+            <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To determine whether <xhtml:code>yum</xhtml:code> has been configured to disable
+<xhtml:code>gpgcheck</xhtml:code> for any repos,  inspect all files in
+<xhtml:code>/etc/yum.repos.d</xhtml:code> and ensure the following does not appear in any
+sections:
+<pre xmlns="http://www.w3.org/1999/xhtml">gpgcheck=0</pre>
+A value of <xhtml:code>0</xhtml:code> indicates that <xhtml:code>gpgcheck</xhtml:code> has been disabled for that repo. 
+</check-content>
+          </check>
+        </Rule>
+      </Group>
+    </Group>
+    <Group id="permissions">
+      <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">File Permissions and Masks</title>
+      <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Traditional Unix security relies heavily on file and
+directory permissions to prevent unauthorized users from reading or
+modifying files to which they should not have access. 
+</description>
+      <Group id="permissions_within_important_dirs">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Verify File Permissions Within Some Important Directories</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Some directories contain files whose confidentiality or integrity
+is notably important and may also be susceptible to misconfiguration over time,
+particularly if unpackaged software is installed. As such, an argument exists
+to verify that files' permissions within these directories remain configured
+correctly and restrictively.
+</description>
+        <Rule id="file_permissions_library_dirs" selected="false" severity="medium">
+          <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Shared Library Files Have Restrictive Permissions</title>
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">System-wide shared library files, which are linked to executables
+during process load time or run time, are stored in the following directories
+by default:
+<pre xmlns="http://www.w3.org/1999/xhtml">/lib
+/lib64
+/usr/lib
+/usr/lib64
+</pre>
+Kernel modules, which can be added to the kernel during runtime, are stored in
+<xhtml:code>/lib/modules</xhtml:code>. All files in these directories should not be
+group-writable or world-writable. If any file in these directories is found to
+be group-writable or world-writable, correct its permission with the following
+command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># chmod go-w <i>FILE</i></pre>
+</description>
+          <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">AC-6</reference>
+          <reference href="http://iase.disa.mil/cci/index.html">1499</reference>
+          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Files from shared library directories are loaded into the address
+space of processes (including privileged ones) or of the kernel itself at 
+runtime. Restrictive permissions are necessary to protect the integrity of the
+system.
+</rationale>
+          <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+            <check-content-ref name="oval:ssg:def:148" href="ssg-fedora-oval.xml"/>
+          </check>
+        </Rule>
+        <Rule id="file_ownership_library_dirs" selected="false" severity="medium">
+          <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Shared Library Files Have Root Ownership</title>
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">System-wide shared library files, which are linked to executables
+during process load time or run time, are stored in the following directories
+by default:
+<pre xmlns="http://www.w3.org/1999/xhtml">/lib
+/lib64
+/usr/lib
+/usr/lib64
+</pre>
+Kernel modules, which can be added to the kernel during runtime, are also
+stored in <xhtml:code>/lib/modules</xhtml:code>. All files in these directories should be owned
+by the <xhtml:code>root</xhtml:code> user. If the directory, or any file in these directories,
+is found to be owned by a user other than root correct its ownership with the
+following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># chown root <i>FILE</i></pre>
+</description>
+          <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">AC-6</reference>
+          <reference href="http://iase.disa.mil/cci/index.html">1499</reference>
+          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Files from shared library directories are loaded into the address 
+space of processes (including privileged ones) or of the kernel itself at 
+runtime. Proper ownership is necessary to protect the integrity of the system.
+</rationale>
+          <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+            <check-content-ref name="oval:ssg:def:151" href="ssg-fedora-oval.xml"/>
+          </check>
+        </Rule>
+        <Rule id="file_permissions_binary_dirs" selected="false" severity="medium">
+          <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">System Executables Have Restrictive Permissions</title>
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+System executables are stored in the following directories by default:
+<pre xmlns="http://www.w3.org/1999/xhtml">/bin
+/usr/bin
+/usr/local/bin
+/sbin
+/usr/sbin
+/usr/local/sbin</pre>
+All files in these directories should not be group-writable or world-writable.
+If any file <i xmlns="http://www.w3.org/1999/xhtml">FILE</i> in these directories is found to be group-writable or
+world-writable, correct its permission with the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># chmod go-w <i>FILE</i></pre>
+</description>
+          <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">AC-6</reference>
+          <reference href="http://iase.disa.mil/cci/index.html">1499</reference>
+          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">System binaries are executed by privileged users, as well as system
+services, and restrictive permissions are necessary to ensure execution of
+these programs cannot be co-opted.
+</rationale>
+          <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+            <check-content-ref name="oval:ssg:def:146" href="ssg-fedora-oval.xml"/>
+          </check>
+        </Rule>
+        <Rule id="file_ownership_binary_dirs" selected="false" severity="medium">
+          <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">System Executables Have Root Ownership</title>
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+System executables are stored in the following directories by default:
+<pre xmlns="http://www.w3.org/1999/xhtml">/bin
+/usr/bin
+/usr/local/bin
+/sbin
+/usr/sbin
+/usr/local/sbin</pre>
+All files in these directories should be owned by the <xhtml:code>root</xhtml:code> user. If
+any file <i xmlns="http://www.w3.org/1999/xhtml">FILE</i> in these directories is found to be owned by a user other
+than root, correct its ownership with the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># chown root <i>FILE</i></pre>
+</description>
+          <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">AC-6</reference>
+          <reference href="http://iase.disa.mil/cci/index.html">1499</reference>
+          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">System binaries are executed by privileged users as well as system
+services, and restrictive permissions are necessary to ensure that their
+execution of these programs cannot be co-opted.
+</rationale>
+          <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+            <check-content-ref name="oval:ssg:def:141" href="ssg-fedora-oval.xml"/>
+          </check>
+        </Rule>
+      </Group>
+    </Group>
+    <Group id="accounts">
+      <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Account and Access Control</title>
+      <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">In traditional Unix security, if an attacker gains
+shell access to a certain login account, they can perform any action
+or access any file to which that account has access. Therefore,
+making it more difficult for unauthorized people to gain shell
+access to accounts, particularly to privileged accounts, is a
+necessary part of securing a system. This section introduces
+mechanisms for restricting access to accounts under Fedora.
+</description>
+      <Group id="accounts-restrictions">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Protect Accounts by Restricting Password-Based Login</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Conventionally, Unix shell accounts are accessed by
+providing a username and password to a login program, which tests
+these values for correctness using the <xhtml:code>/etc/passwd</xhtml:code> and
+<xhtml:code>/etc/shadow</xhtml:code> files. Password-based login is vulnerable to
+guessing of weak passwords, and to sniffing and man-in-the-middle
+attacks against passwords entered over a network or at an insecure
+console. Therefore, mechanisms for accessing accounts by entering
+usernames and passwords should be restricted to those which are
+operationally necessary.</description>
+        <Group id="root_logins">
+          <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Restrict Root Logins</title>
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Direct root logins should be allowed only for emergency use.
+In normal situations, the administrator should access the system
+via a unique unprivileged account, and then use <xhtml:code>su</xhtml:code> or <xhtml:code>sudo</xhtml:code> to execute
+privileged commands. Discouraging administrators from accessing the
+root account directly ensures an audit trail in organizations with
+multiple administrators. Locking down the channels through which
+root can connect directly also reduces opportunities for
+password-guessing against the root account. The <xhtml:code>login</xhtml:code> program
+uses the file <xhtml:code>/etc/securetty</xhtml:code> to determine which interfaces
+should allow root logins.
+
+The virtual devices <xhtml:code>/dev/console</xhtml:code>
+and <xhtml:code>/dev/tty*</xhtml:code> represent the system consoles (accessible via
+the Ctrl-Alt-F1 through Ctrl-Alt-F6 keyboard sequences on a default
+installation). The default securetty file also contains <xhtml:code>/dev/vc/*</xhtml:code>.
+These are likely to be deprecated in most environments, but may be retained
+for compatibility. Furthermore, <xhtml:code>/dev/hvc*</xhtml:code> represent virtio-serial
+consoles, <xhtml:code>/dev/hvsi*</xhtml:code> IBM pSeries serial consoles, and finally
+<xhtml:code>/dev/xvc0</xhtml:code> Xen virtual console. Root should also be prohibited
+from connecting via network protocols. Other sections of this document
+include guidance describing how to prevent root from logging in via SSH.
+</description>
+          <Rule id="no_direct_root_logins" selected="false" severity="medium">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Direct root Logins Not Allowed</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To further limit access to the <xhtml:code>root</xhtml:code> account, administrators
+can disable root logins at the console by editing the <xhtml:code>/etc/securetty</xhtml:code> file.
+This file lists all devices the root user is allowed to login to. If the file does
+not exist at all, the root user can login through any communication device on the
+system, whether via the console or via a raw network interface. This is dangerous
+as user can login to his machine as root via Telnet, which sends the password in
+plain text over the network. By default, Fedora's <xhtml:code>/etc/securetty</xhtml:code> file
+only allows the root user to login at the console physically attached to the
+machine. To prevent root from logging in, remove the contents of this file.
+To prevent direct root logins, remove the contents of this file by typing the
+following command:
+<pre xmlns="http://www.w3.org/1999/xhtml">
+echo &gt; /etc/securetty
+</pre>
+</description>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-2(1)</reference>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Disabling direct root logins ensures proper accountability and multifactor
+authentication to privileged accounts. Users will first login, then escalate
+to privileged (root) access via su / sudo. This scenario is nowadays required
+by security standards.
+</rationale>
+            <check system="ocil-transitional">
+              <check-export export-name="the /etc/securetty file is not empty" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To ensure root may not directly login to the system over physical consoles,
+run the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml">cat /etc/securetty</pre>
+If any output is returned, this is a finding.
+</check-content>
+            </check>
+          </Rule>
+          <Rule id="securetty_root_login_console_only" selected="false" severity="medium">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Virtual Console Root Logins Restricted</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+To restrict root logins through the (deprecated) virtual console devices,
+ensure lines of this form do not appear in <xhtml:code>/etc/securetty</xhtml:code>:
+<pre xmlns="http://www.w3.org/1999/xhtml">vc/1
+vc/2
+vc/3
+vc/4</pre>
+</description>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">AC-6(2)</reference>
+            <reference href="http://iase.disa.mil/cci/index.html">770</reference>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Preventing direct root login to virtual console devices
+helps ensure accountability for actions taken on the system
+using the root account.
+</rationale>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg:def:139" href="ssg-fedora-oval.xml"/>
+            </check>
+            <check system="ocil-transitional">
+              <check-export export-name="root login over virtual console devices is permitted" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To check for virtual console entries which permit root login, run the
+following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># grep ^vc/[0-9] /etc/securetty</pre>
+If any output is returned, then root logins over virtual console devices is permitted.
+</check-content>
+            </check>
+          </Rule>
+          <Rule id="restrict_serial_port_logins" selected="false" severity="low">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Serial Port Root Logins Restricted</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To restrict root logins on serial ports,
+ensure lines of this form do not appear in <xhtml:code>/etc/securetty</xhtml:code>:
+<pre xmlns="http://www.w3.org/1999/xhtml">ttyS0
+ttyS1</pre>
+<!-- TODO: discussion/description of serial port -->
+</description>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">AC-6(2)</reference>
+            <reference href="http://iase.disa.mil/cci/index.html">770</reference>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Preventing direct root login to serial port interfaces
+helps ensure accountability for actions taken on the systems
+using the root account.
+</rationale>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg:def:156" href="ssg-fedora-oval.xml"/>
+            </check>
+            <check system="ocil-transitional">
+              <check-export export-name="root login over serial ports is permitted" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To check for serial port entries which permit root login,
+run the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># grep ^ttyS/[0-9] /etc/securetty</pre>
+If any output is returned, then root login over serial ports is permitted.
+</check-content>
+            </check>
+          </Rule>
+          <Rule id="no_root_webbrowsing" selected="false" severity="low">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Web Browser Use for Administrative Accounts Restricted</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Enforce policy requiring administrative accounts use web browsers only for
+local service administration.
+</description>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+If a browser vulnerability is exploited while running with administrative privileges,
+the entire system could be compromised. Specific exceptions for local service
+administration should be documented in site-defined policy.
+</rationale>
+            <check system="ocil-transitional">
+              <check-export export-name="this is not the case" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+Check the <xhtml:code>root</xhtml:code> home directory for a <xhtml:code>.mozilla</xhtml:code> directory. If
+one exists, ensure browsing is limited to local service administration.
+</check-content>
+            </check>
+          </Rule>
+          <Rule id="no_shelllogin_for_systemaccounts" selected="false" severity="medium">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">System Accounts Do Not Run a Shell Upon Login</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Some accounts are not associated with a human
+user of the system, and exist to perform some administrative
+function. Should an attacker be able to log into these accounts,
+they should not be granted access to a shell.
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+The login shell for each local account is stored in the last field of each line
+in <xhtml:code>/etc/passwd</xhtml:code>. System accounts are those user accounts with a user ID less than
+500. The user ID is stored in the third field.
+If any system account <i xmlns="http://www.w3.org/1999/xhtml">SYSACCT</i> (other than root) has a login shell,
+disable it with the command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># usermod -s /sbin/nologin <i>SYSACCT</i></pre>
+</description>
+            <warning xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US" override="false" category="functionality">
+Do not perform the steps in this
+section on the root account. Doing so might cause the system to
+become inaccessible.
+</warning>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf"/>
+            <reference href="http://iase.disa.mil/cci/index.html">178</reference>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Ensuring shells are not given to system accounts upon login
+makes it more difficult for attackers to make use of
+system accounts.
+</rationale>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg:def:119" href="ssg-fedora-oval.xml"/>
+            </check>
+            <check system="ocil-transitional">
+              <check-export export-name="any system account (other than root) has a login shell" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To obtain a listing of all users,
+their UIDs, and their shells, run the command:
+<pre xmlns="http://www.w3.org/1999/xhtml">$ awk -F: '{print $1 ":" $3 ":" $7}' /etc/passwd</pre>
+Identify the system accounts from this listing. These will
+primarily be the accounts with UID numbers less than 500, other
+than root.
+</check-content>
+            </check>
+          </Rule>
+          <Rule id="no_uidzero_except_root" selected="false" severity="medium">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Only Root Has UID 0</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+If any account other than root has a UID of 0,
+this misconfiguration should be investigated and the
+accounts other than root should be removed or have their UID changed.
+</description>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">AC-6</reference>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-2(1)</reference>
+            <reference href="http://iase.disa.mil/cci/index.html">366</reference>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+An account has root authority if it has a UID of 0. Multiple accounts
+with a UID of 0 afford more opportunity for potential intruders to
+guess a password for a privileged account. Proper configuration of
+sudo is recommended to afford multiple system administrators
+access to root privileges in an accountable manner.
+</rationale>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg:def:121" href="ssg-fedora-oval.xml"/>
+            </check>
+            <check system="ocil-transitional">
+              <check-export export-name="any account other than root has a UID of 0" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To list all password file entries for accounts with UID 0, run the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># awk -F: '($3 == "0") {print}' /etc/passwd</pre>
+This should print only one line, for the user root.
+</check-content>
+            </check>
+          </Rule>
+          <Rule id="root_path_default" selected="false" severity="low">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Root Path Is Vendor Default</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Assuming root shell is bash, edit the following files:
+<pre xmlns="http://www.w3.org/1999/xhtml">~/.profile</pre>
+<pre xmlns="http://www.w3.org/1999/xhtml">~/.bashrc</pre>
+Change any <xhtml:code>PATH</xhtml:code> variables to the vendor default for root and remove any
+empty <xhtml:code>PATH</xhtml:code> entries or references to relative paths.
+</description>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+The root account's executable search path must be the vendor default, and must
+contain only absolute paths.
+</rationale>
+            <check system="ocil-transitional">
+              <check-export export-name="any of these conditions are not met" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To view the root user's <xhtml:code>PATH</xhtml:code>, run the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># env | grep PATH</pre>
+If correctly configured, the <xhtml:code>PATH</xhtml:code> must: use vendor default settings,
+have no empty entries, and have no entries beginning with a character
+other than a slash (/).
+</check-content>
+            </check>
+          </Rule>
+        </Group>
+        <Group id="password_storage">
+          <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Proper Storage and Existence of Password Hashes</title>
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+By default, password hashes for local accounts are stored
+in the second field (colon-separated) in
+<xhtml:code>/etc/shadow</xhtml:code>. This file should be readable only by
+processes running with root credentials, preventing users from
+casually accessing others' password hashes and attempting
+to crack them.
+However, it remains possible to misconfigure the system
+and store password hashes
+in world-readable files such as <xhtml:code>/etc/passwd</xhtml:code>, or
+to even store passwords themselves in plaintext on the system.
+Using system-provided tools for password change/creation
+should allow administrators to avoid such misconfiguration.
+</description>
+          <Rule id="no_empty_passwords" selected="false" severity="high">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Log In to Accounts With Empty Password Impossible</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">If an account is configured for password authentication
+but does not have an assigned password, it may be possible to log
+into the account without authentication. Remove any instances of the <xhtml:code>nullok</xhtml:code>
+option in <xhtml:code>/etc/pam.d/system-auth</xhtml:code> to
+prevent logins with empty passwords.
+</description>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-5(b)</reference>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-5(c)</reference>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-5(1)(a)</reference>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+If an account has an empty password, anyone could log in and
+run commands with the privileges of that account. Accounts with
+empty passwords should never be used in operational
+environments.
+</rationale>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg:def:135" href="ssg-fedora-oval.xml"/>
+            </check>
+            <check system="ocil-transitional">
+              <check-export export-name="NULL passwords can be used" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To verify that null passwords cannot be used, run the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># grep nullok /etc/pam.d/system-auth</pre>
+If this produces any output, it may be possible to log into accounts
+with empty passwords.
+</check-content>
+            </check>
+          </Rule>
+          <Rule id="no_hashes_outside_shadow" selected="false" severity="medium">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Password Hashes For Each Account Shadowed</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+If any password hashes are stored in <xhtml:code>/etc/passwd</xhtml:code> (in the second field,
+instead of an <xhtml:code>x</xhtml:code>), the cause of this misconfiguration should be
+investigated.  The account should have its password reset and the hash should be
+properly stored, or the account should be deleted entirely.
+</description>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-5(h)</reference>
+            <reference href="http://iase.disa.mil/cci/index.html">201</reference>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+The hashes for all user account passwords should be stored in
+the file <xhtml:code>/etc/shadow</xhtml:code> and never in <xhtml:code>/etc/passwd</xhtml:code>,
+which is readable by all users.
+</rationale>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg:def:131" href="ssg-fedora-oval.xml"/>
+            </check>
+            <check system="ocil-transitional">
+              <check-export export-name="any stored hashes are found in /etc/passwd" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To check that no password hashes are stored in
+<xhtml:code>/etc/passwd</xhtml:code>, run the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># awk -F: '($2 != "x") {print}' /etc/passwd</pre>
+If it produces any output, then a password hash is
+stored in <xhtml:code>/etc/passwd</xhtml:code>.
+</check-content>
+            </check>
+          </Rule>
+          <Rule id="gid_passwd_group_same" selected="false" severity="low">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">All GIDs referenced in /etc/passwd Defined in /etc/group</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Add a group to the system for each GID referenced without a corresponding group.
+</description>
+            <reference href="http://iase.disa.mil/cci/index.html">366</reference>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Inconsistency in GIDs between <xhtml:code>/etc/passwd</xhtml:code> and <xhtml:code>/etc/group</xhtml:code> could lead to a user having unintended rights.
+</rationale>
+            <check system="ocil-transitional">
+              <check-export export-name="there is output" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To ensure all GIDs referenced in <xhtml:code>/etc/passwd</xhtml:code> are defined in <xhtml:code>/etc/group</xhtml:code>,
+run the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># pwck -qr</pre>
+There should be no output.
+</check-content>
+            </check>
+          </Rule>
+          <Rule id="no_netrc_files" selected="false" severity="medium">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">netrc Files Do Not Exist</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The <xhtml:code>.netrc</xhtml:code> files contain login information
+used to auto-login into FTP servers and reside in the user's home
+directory. These files may contain unencrypted passwords to
+remote FTP servers making them susceptible to access by unauthorized
+users and should not be used.  Any <xhtml:code>.netrc</xhtml:code> files should be removed.
+</description>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-5(h)</reference>
+            <reference href="http://iase.disa.mil/cci/index.html">196</reference>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Unencrypted passwords for remote FTP servers may be stored in <xhtml:code>.netrc</xhtml:code>
+files. DoD policy requires passwords be encrypted in storage and not used
+in access scripts.
+</rationale>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg:def:144" href="ssg-fedora-oval.xml"/>
+            </check>
+            <check system="ocil-transitional">
+              <check-export export-name="any .netrc files exist" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To check the system for the existence of any <xhtml:code>.netrc</xhtml:code> files,
+run the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># find /home -xdev -name .netrc</pre>
+<!-- needs fixup to limit search to home dirs -->
+</check-content>
+            </check>
+          </Rule>
+        </Group>
+        <Group id="password_expiration">
+          <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Set Password Expiration Parameters</title>
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The file <xhtml:code>/etc/login.defs</xhtml:code> controls several
+password-related settings. Programs such as <xhtml:code>passwd</xhtml:code>,
+<xhtml:code>su</xhtml:code>, and <xhtml:code>login</xhtml:code> consult <xhtml:code>/etc/login.defs</xhtml:code> to determine
+behavior with regard to password aging, expiration warnings,
+and length. See the man page <xhtml:code>login.defs(5)</xhtml:code> for more information.
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+Users should be forced to change their passwords, in order to
+decrease the utility of compromised passwords. However, the need to
+change passwords often should be balanced against the risk that
+users will reuse or write down passwords if forced to change them
+too often. Forcing password changes every 90-360 days, depending on
+the environment, is recommended. Set the appropriate value as
+<xhtml:code>PASS_MAX_DAYS</xhtml:code> and apply it to existing accounts with the
+<xhtml:code>-M</xhtml:code> flag.
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+The <xhtml:code>PASS_MIN_DAYS</xhtml:code> (<xhtml:code>-m</xhtml:code>) setting prevents password
+changes for 7 days after the first change, to discourage password
+cycling. If you use this setting, train users to contact an administrator
+for an emergency password change in case a new password becomes
+compromised. The <xhtml:code>PASS_WARN_AGE</xhtml:code> (<xhtml:code>-W</xhtml:code>) setting gives
+users 7 days of warnings at login time that their passwords are about to expire.
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+For example, for each existing human user <i xmlns="http://www.w3.org/1999/xhtml">USER</i>, expiration parameters
+could be adjusted to a 180 day maximum password age, 7 day minimum password
+age, and 7 day warning period with the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># chage -M 180 -m 7 -W 7 USER</pre>
+</description>
+          <Value id="var_accounts_password_minlen_login_defs" type="number">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">minimum password length</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Minimum number of characters in password</description>
+            <warning xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US" override="false" category="general">This will only check new passwords</warning>
+            <value>12</value>
+            <value selector="6">6</value>
+            <value selector="8">8</value>
+            <value selector="10">10</value>
+            <value selector="12">12</value>
+            <value selector="14">14</value>
+          </Value>
+          <Value id="var_accounts_maximum_age_login_defs" type="number">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">maximum password age</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Maximum age of password in days</description>
+            <warning xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US" override="false" category="general">This will only apply to newly created accounts</warning>
+            <value>60</value>
+            <value selector="60">60</value>
+            <value selector="90">90</value>
+            <value selector="120">120</value>
+            <value selector="180">180</value>
+          </Value>
+          <Value id="var_accounts_minimum_age_login_defs" type="number">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">minimum password age</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Minimum age of password in days</description>
+            <warning xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US" override="false" category="general">This will only apply to newly created accounts</warning>
+            <value>7</value>
+            <value selector="7">7</value>
+            <value selector="5">5</value>
+            <value selector="1">1</value>
+            <value selector="2">2</value>
+            <value selector="0">0</value>
+          </Value>
+          <Value id="var_accounts_password_warn_age_login_defs" type="number">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">warning days before password expires</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The number of days' warning given before a password expires.</description>
+            <warning xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US" override="false" category="general">This will only apply to newly created accounts</warning>
+            <value>7</value>
+            <value selector="0">0</value>
+            <value selector="7">7</value>
+            <value selector="14">14</value>
+          </Value>
+          <Rule id="accounts_password_minlen_login_defs" selected="false" severity="medium">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Password Minimum Length</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To specify password length requirements for new accounts,
+edit the file <xhtml:code>/etc/login.defs</xhtml:code> and add or correct the following
+lines:
+<pre xmlns="http://www.w3.org/1999/xhtml">PASS_MIN_LEN 12<!-- <sub idref="var_accounts_password_minlen_login_defs"> --></pre>
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+Nowadays recommended values, considered as secure by various organizations
+focused on topic of computer security, range from <xhtml:code>12 (FISMA)</xhtml:code> up to
+<xhtml:code>14 (DoD)</xhtml:code> characters for password length requirements.
+If a program consults <xhtml:code>/etc/login.defs</xhtml:code> and also another PAM module
+(such as <xhtml:code>pam_cracklib</xhtml:code>) during a password change operation,
+then the most restrictive must be satisfied. See PAM section
+for more information about enforcing password quality requirements.
+</description>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-5(f)</reference>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-5(1)(a)</reference>
+            <reference href="http://iase.disa.mil/cci/index.html">205</reference>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Requiring a minimum password length makes password
+cracking attacks more difficult by ensuring a larger
+search space. However, any security benefit from an onerous requirement
+must be carefully weighed against usability problems, support costs, or
+counterproductive behavior that may result.
+</rationale>
+            <fix xmlns:xhtml="http://www.w3.org/1999/xhtml" system="urn:xccdf:fix:script:sh">var_accounts_password_minlen_login_defs="<sub xmlns="http://checklists.nist.gov/xccdf/1.1" idref="var_accounts_password_minlen_login_defs"/>"
+grep -q ^PASS_MIN_LEN /etc/login.defs &amp;&amp; \
+sed -i "s/PASS_MIN_LEN.*/PASS_MIN_LEN\t$var_accounts_password_minlen_login_defs/g" /etc/login.defs
+if ! [ $? -eq 0 ]
+then
+  echo -e "PASS_MIN_LEN\t$var_accounts_password_minlen_login_defs" &gt;&gt; /etc/login.defs
+fi
+</fix>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg:var:212" value-id="var_accounts_password_minlen_login_defs"/>
+              <check-content-ref name="oval:ssg:def:111" href="ssg-fedora-oval.xml"/>
+            </check>
+            <check system="ocil-transitional">
+              <check-export export-name="it is not set to the required value" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To check the minimum password length, run the command:
+<pre xmlns="http://www.w3.org/1999/xhtml">$ grep PASS_MIN_LEN /etc/login.defs</pre>
+Passwords of length <xhtml:code>12</xhtml:code> characters and more are nowadays
+considered to be a standard requirement.
+</check-content>
+            </check>
+          </Rule>
+          <Rule id="accounts_minimum_age_login_defs" selected="false" severity="medium">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Password Minimum Age</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To specify password minimum age for new accounts,
+edit the file <xhtml:code>/etc/login.defs</xhtml:code> and add or correct the
+following line, replacing the <i xmlns="http://www.w3.org/1999/xhtml">DAYS</i> item as appropriate:
+<pre xmlns="http://www.w3.org/1999/xhtml">PASS_MIN_DAYS <i>DAYS</i></pre>
+A value of 1 day is considered to be sufficient for many environments.
+</description>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-5(f)</reference>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-5(1)(d)</reference>
+            <reference href="http://iase.disa.mil/cci/index.html">198</reference>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Setting the minimum password age protects against users cycling
+back to a favorite password after satisfying the password reuse
+requirement.
+</rationale>
+            <fix xmlns:xhtml="http://www.w3.org/1999/xhtml" system="urn:xccdf:fix:script:sh">var_accounts_minimum_age_login_defs="<sub xmlns="http://checklists.nist.gov/xccdf/1.1" idref="var_accounts_minimum_age_login_defs"/>"
+grep -q ^PASS_MIN_DAYS /etc/login.defs &amp;&amp; \
+sed -i "s/PASS_MIN_DAYS.*/PASS_MIN_DAYS\t$var_accounts_minimum_age_login_defs/g" /etc/login.defs
+if ! [ $? -eq 0 ]
+then
+  echo -e "PASS_MIN_DAYS\t$var_accounts_minimum_age_login_defs" &gt;&gt; /etc/login.defs
+fi
+</fix>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg:var:213" value-id="var_accounts_minimum_age_login_defs"/>
+              <check-content-ref name="oval:ssg:def:113" href="ssg-fedora-oval.xml"/>
+            </check>
+            <check system="ocil-transitional">
+              <check-export export-name="it is not set to the required value" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To check the minimum password age, run the command:
+<pre xmlns="http://www.w3.org/1999/xhtml">$ grep PASS_MIN_DAYS /etc/login.defs</pre>
+A value of 1 day is considered to be sufficient for many environments.
+</check-content>
+            </check>
+          </Rule>
+          <Rule id="accounts_maximum_age_login_defs" selected="false" severity="medium">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Password Maximum Age</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To specify password maximum age for new accounts,
+edit the file <xhtml:code>/etc/login.defs</xhtml:code> and add or correct the
+following line, replacing the <i xmlns="http://www.w3.org/1999/xhtml">DAYS</i> item appropriately:
+<pre xmlns="http://www.w3.org/1999/xhtml">PASS_MAX_DAYS <i>DAYS</i></pre>
+A value of 180 days is sufficient for many environments.
+</description>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-5(f)</reference>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-5(g)</reference>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-5(1)(d)</reference>
+            <reference href="http://iase.disa.mil/cci/index.html">180</reference>
+            <reference href="http://iase.disa.mil/cci/index.html">199</reference>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Setting the password maximum age ensures users are required to
+periodically change their passwords. This could possibly decrease
+the utility of a stolen password. Requiring shorter password lifetimes
+increases the risk of users writing down the password in a convenient
+location subject to physical compromise.</rationale>
+            <fix xmlns:xhtml="http://www.w3.org/1999/xhtml" system="urn:xccdf:fix:script:sh">var_accounts_maximum_age_login_defs="<sub xmlns="http://checklists.nist.gov/xccdf/1.1" idref="var_accounts_maximum_age_login_defs"/>"
+grep -q ^PASS_MAX_DAYS /etc/login.defs &amp;&amp; \
+sed -i "s/PASS_MAX_DAYS.*/PASS_MAX_DAYS\t$var_accounts_maximum_age_login_defs/g" /etc/login.defs
+if ! [ $? -eq 0 ]
+then
+  echo -e "PASS_MAX_DAYS\t$var_accounts_maximum_age_login_defs" &gt;&gt; /etc/login.defs
+fi
+</fix>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg:var:211" value-id="var_accounts_maximum_age_login_defs"/>
+              <check-content-ref name="oval:ssg:def:109" href="ssg-fedora-oval.xml"/>
+            </check>
+            <check system="ocil-transitional">
+              <check-export export-name="it is not set to the required value" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To check the maximum password age, run the command:
+<pre xmlns="http://www.w3.org/1999/xhtml">$ grep PASS_MAX_DAYS /etc/login.defs</pre>
+A value of 180 days is sufficient for many environments.
+</check-content>
+            </check>
+          </Rule>
+          <Rule id="accounts_password_warn_age_login_defs" selected="false" severity="low">
+            <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Password Warning Age</title>
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To specify how many days prior to password
+expiration that a warning will be issued to users,
+edit the file <xhtml:code>/etc/login.defs</xhtml:code> and add or correct
+ the following line, replacing the <i xmlns="http://www.w3.org/1999/xhtml">DAYS</i> item as appropriate:
+<pre xmlns="http://www.w3.org/1999/xhtml">PASS_WARN_AGE <i>DAYS</i></pre>
+A value of 7 days would be nowadays considered to be a standard.
+<!-- <sub idref="accounts_password_warn_age_login_defs_login_defs_value" /> -->
+</description>
+            <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-5(f)</reference>
+            <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Setting the password warning age enables users to make the change
+at a practical time.
+</rationale>
+            <fix xmlns:xhtml="http://www.w3.org/1999/xhtml" system="urn:xccdf:fix:script:sh">var_accounts_password_warn_age_login_defs="<sub xmlns="http://checklists.nist.gov/xccdf/1.1" idref="var_accounts_password_warn_age_login_defs"/>"
+grep -q ^PASS_WARN_AGE /etc/login.defs &amp;&amp; \
+sed -i "s/PASS_WARN_AGE.*/PASS_WARN_AGE\t$var_accounts_password_warn_age_login_defs/g" /etc/login.defs
+if ! [ $? -eq 0 ]
+then
+  echo -e "PASS_WARN_AGE\t$var_accounts_password_warn_age_login_defs" &gt;&gt; /etc/login.defs
+fi
+</fix>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg:var:214" value-id="var_accounts_password_warn_age_login_defs"/>
+              <check-content-ref name="oval:ssg:def:129" href="ssg-fedora-oval.xml"/>
+            </check>
+            <check system="ocil-transitional">
+              <check-export export-name="it is not set to the required value" value-id="conditional_clause"/>
+              <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To check the password warning age, run the command:
+<pre xmlns="http://www.w3.org/1999/xhtml">$ grep PASS_WARN_AGE /etc/login.defs</pre>
+A value of 7 days would be nowadays considered to be a standard.
+</check-content>
+            </check>
+          </Rule>
+        </Group>
+      </Group>
+    </Group>
+  </Group>
+  <Group id="services">
+    <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Services</title>
+    <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+The best protection against vulnerable software is running less software. This
+section describes how to review the software which Fedora installs on a system
+and disable software which is not needed. It then enumerates the software
+packages installed on a default Fedora system and provides guidance about which
+ones can be safely disabled.
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+Fedora provides a convenient minimal install option that essentially installs
+the bare necessities for a functional system. When building Fedora servers, it
+is highly recommended to select the minimal packages and then build up the
+system from there.
+</description>
+    <Group id="ntp">
+      <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Network Time Protocol</title>
+      <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The Network Time Protocol is used to manage the system clock over
+a network. Computer clocks are not very accurate, so time will drift
+unpredictably on unmanaged systems. Central time protocols can be used both to
+ensure that time is consistent among a network of machines, and that their time
+is consistent with the outside world.
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+If every system on a network reliably reports the same time, then it is much
+easier to correlate log messages in case of an attack. In addition, a number of
+cryptographic protocols (such as Kerberos) use timestamps to prevent certain
+types of attacks. If your network does not have synchronized time, these
+protocols may be unreliable or even unusable.
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+Depending on the specifics of the network, global time accuracy may be just as
+important as local synchronization, or not very important at all. If your
+network is connected to the Internet, using a public timeserver (or one
+provided by your enterprise) provides globally accurate timestamps which may be
+essential in investigating or responding to an attack which originated outside
+of your network.
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+A typical network setup involves a small number of internal systems operating
+as NTP servers, and the remainder obtaining time information from those
+internal servers.
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+More information on how to configure the NTP server software, including
+configuration of cryptographic authentication for time data, is available at
+http://www.ntp.org.
+</description>
+      <Rule id="service_ntpd_enabled" selected="false" severity="medium">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">NTP Daemon Enabled</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+          
+    The <xhtml:code>ntpd</xhtml:code> service can be enabled with the following command:
+    <xhtml:pre># systemctl enable ntpd.service</xhtml:pre>
+        </description>
+        <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">AU-8(1)</reference>
+        <reference href="http://iase.disa.mil/cci/index.html">160</reference>
+        <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Enabling the <xhtml:code>ntpd</xhtml:code> service ensures that the <xhtml:code>ntpd</xhtml:code>
+service will be running and that the system will synchronize its time to any
+servers specified. This is important whether the system is configured to be a
+client (and synchronize only its own clock) or it is also acting as an NTP
+server to other systems.  Synchronizing time is essential for authentication
+services such as Kerberos, but it is also important for maintaining accurate
+logs and auditing possible security breaches.
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+The NTP daemon offers all of the functionality of <xhtml:code>ntpdate</xhtml:code>, which is
+now deprecated.  Additional information on this is available at
+http://support.ntp.org/bin/view/Dev/DeprecatingNtpdate</rationale>
+        <fix xmlns:xhtml="http://www.w3.org/1999/xhtml" system="urn:xccdf:fix:script:sh">#
+# Install ntp package if necessary
+#
+
+yum -y install ntp
+
+#
+# Enable ntpd service (for current systemd target)
+#
+
+systemctl enable ntpd.service
+
+#
+# Start ntpd if not currently running
+#
+
+systemctl start ntpd.service
+</fix>
+        <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+          <check-content-ref name="oval:ssg:def:127" href="ssg-fedora-oval.xml"/>
+        </check>
+      </Rule>
+      <Rule id="ntpd_specify_remote_server" selected="false" severity="medium">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Remote NTP Server Specified</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To specify a remote NTP server for time synchronization, edit
+the file <xhtml:code>/etc/ntp.conf</xhtml:code>. Add or correct the following lines,
+substituting the IP or hostname of a remote NTP server for <em xmlns="http://www.w3.org/1999/xhtml">ntpserver</em>:
+<pre xmlns="http://www.w3.org/1999/xhtml">server <i>ntpserver</i></pre>
+This instructs the NTP software to contact that remote server to obtain time
+data.
+</description>
+        <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">AU-8(1)</reference>
+        <reference href="http://iase.disa.mil/cci/index.html">160</reference>
+        <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Synchronizing with an NTP server makes it possible to collate system
+logs from multiple sources or correlate computer events with real time events.
+</rationale>
+        <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+          <check-content-ref name="oval:ssg:def:161" href="ssg-fedora-oval.xml"/>
+        </check>
+      </Rule>
+    </Group>
+    <Group id="ssh">
+      <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">SSH Server</title>
+      <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The SSH protocol is recommended for remote login and remote file
+transfer. SSH provides confidentiality and integrity for data exchanged between
+two systems, as well as server authentication, through the use of public key
+cryptography. The implementation included with the system is called OpenSSH,
+and more detailed documentation is available from its website,
+http://www.openssh.org. Its server program is called <xhtml:code>sshd</xhtml:code> and
+provided by the RPM package <xhtml:code>openssh-server</xhtml:code>.</description>
+      <Value id="sshd_idle_timeout_value" operator="equals" type="number">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">SSH session Idle time</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Specify duration of allowed idle time.</description>
+        <value>300</value>
+        <value selector="5_minutes">300</value>
+        <value selector="10_minutes">600</value>
+        <value selector="15_minutes">900</value>
+      </Value>
+      <Group id="ssh_server">
+        <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Configure OpenSSH Server if Necessary</title>
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">If the system needs to act as an SSH server, then certain changes
+should be made to the OpenSSH daemon configuration file
+<xhtml:code>/etc/ssh/sshd_config</xhtml:code>. The following recommendations can be applied
+to this file. See the <xhtml:code>sshd_config(5)</xhtml:code> man page for more detailed
+information.</description>
+        <Rule id="sshd_disable_root_login" selected="false" severity="medium">
+          <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">SSH Root Login Disabled</title>
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The root user should never be allowed to login to a system
+directly over a network. To disable root login via SSH, add or correct the
+following line in <xhtml:code>/etc/ssh/sshd_config</xhtml:code>:
+<pre xmlns="http://www.w3.org/1999/xhtml">PermitRootLogin no</pre>
+</description>
+          <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">AC-6(2)</reference>
+          <reference href="http://csrc.nist.gov/publications/nistpubs/800-53-Rev3/sp800-53-rev3-final.pdf">IA-2(1)</reference>
+          <reference href="http://iase.disa.mil/cci/index.html">770</reference>
+          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Permitting direct root login reduces auditable information about who ran
+privileged commands on the system and also allows direct attack attempts on
+root's password.
+</rationale>
+          <fix xmlns:xhtml="http://www.w3.org/1999/xhtml" system="urn:xccdf:fix:script:sh">
+SSHD_CONFIG='/etc/ssh/sshd_config'
+
+# Obtain line number of first uncommented case-insensitive occurrence of Match
+# block directive (possibly prefixed with whitespace) present in $SSHD_CONFIG
+FIRST_MATCH_BLOCK=$(sed -n '/^[[:space:]]*Match[^\n]*/I{=;q}' $SSHD_CONFIG)
+
+# Obtain line number of first uncommented case-insensitive occurence of
+# PermitRootLogin directive (possibly prefixed with whitespace) present in
+# $SSHD_CONFIG
+FIRST_PERMIT_ROOT_LOGIN=$(sed -n '/^[[:space:]]*PermitRootLogin[^\n]*/I{=;q}' $SSHD_CONFIG)
+
+# Case: Match block directive not present in $SSHD_CONFIG
+if [ -z "$FIRST_MATCH_BLOCK" ]
+then
+
+    # Case: PermitRootLogin directive not present in $SSHD_CONFIG yet
+    if [ -z "$FIRST_PERMIT_ROOT_LOGIN" ]
+    then
+        # Append 'PermitRootLogin no' at the end of $SSHD_CONFIG
+        echo -e "\nPermitRootLogin no" &gt;&gt; $SSHD_CONFIG
+
+    # Case: PermitRootLogin directive present in $SSHD_CONFIG already
+    else
+        # Replace first uncommented case-insensitive occurrence
+        # of PermitRootLogin directive
+        sed -i "$FIRST_PERMIT_ROOT_LOGIN s/^[[:space:]]*PermitRootLogin.*$/PermitRootLogin no/I" $SSHD_CONFIG
+    fi
+
+# Case: Match block directive present in $SSHD_CONFIG
+else
+
+    # Case: PermitRootLogin directive not present in $SSHD_CONFIG yet
+    if [ -z "$FIRST_PERMIT_ROOT_LOGIN" ]
+    then
+        # Prepend 'PermitRootLogin no' before first uncommented
+        # case-insensitive occurrence of Match block directive
+        sed -i "$FIRST_MATCH_BLOCK s/^\([[:space:]]*Match[^\n]*\)/PermitRootLogin no\n\1/I" $SSHD_CONFIG
+
+    # Case: PermitRootLogin directive present in $SSHD_CONFIG and placed
+    #       before first Match block directive
+    elif [ "$FIRST_PERMIT_ROOT_LOGIN" -lt "$FIRST_MATCH_BLOCK" ]
+    then
+        # Replace first uncommented case-insensitive occurrence
+        # of PermitRootLogin directive
+        sed -i "$FIRST_PERMIT_ROOT_LOGIN s/^[[:space:]]*PermitRootLogin.*$/PermitRootLogin no/I" $SSHD_CONFIG
+
+    # Case: PermitRootLogin directive present in $SSHD_CONFIG and placed
+    # after first Match block directive
+    else
+         # Prepend 'PermitRootLogin no' before first uncommented
+         # case-insensitive occurrence of Match block directive
+         sed -i "$FIRST_MATCH_BLOCK s/^\([[:space:]]*Match[^\n]*\)/PermitRootLogin no\n\1/I" $SSHD_CONFIG
+    fi
+fi
+</fix>
+          <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+            <check-content-ref name="oval:ssg:def:163" href="ssg-fedora-oval.xml"/>
+          </check>
+        </Rule>
+        <Rule id="sshd_disable_empty_passwords" selected="false" severity="high">
+          <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">SSH Access via Empty Passwords Disabled</title>
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To explicitly disallow remote login from accounts with empty
+passwords, add or correct the following line in <xhtml:code>/etc/ssh/sshd_config</xhtml:code>:
+<pre xmlns="http://www.w3.org/1999/xhtml">PermitEmptyPasswords no</pre>
+Any accounts with empty passwords should be disabled immediately, and PAM
+configuration should prevent users from being able to assign themselves empty
+passwords.
+</description>
+          <reference href="http://iase.disa.mil/cci/index.html">765</reference>
+          <reference href="http://iase.disa.mil/cci/index.html">766</reference>
+          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Configuring this setting for the SSH daemon provides additional assurance that
+remote login via SSH will require a password, even in the event of
+misconfiguration elsewhere.
+</rationale>
+          <fix xmlns:xhtml="http://www.w3.org/1999/xhtml" system="urn:xccdf:fix:script:sh">
+SSHD_CONFIG='/etc/ssh/sshd_config'
+
+# Obtain line number of first uncommented case-insensitive occurrence of Match
+# block directive (possibly prefixed with whitespace) present in $SSHD_CONFIG
+FIRST_MATCH_BLOCK=$(sed -n '/^[[:space:]]*Match[^\n]*/I{=;q}' $SSHD_CONFIG)
+
+# Obtain line number of first uncommented case-insensitive occurence of
+# PermitEmptyPasswords directive (possibly prefixed with whitespace) present in
+# $SSHD_CONFIG
+FIRST_PERMIT_EMPTY_PASSWORDS=$(sed -n '/^[[:space:]]*PermitEmptyPasswords[^\n]*/I{=;q}' $SSHD_CONFIG)
+
+# Case: Match block directive not present in $SSHD_CONFIG
+if [ -z "$FIRST_MATCH_BLOCK" ]
+then
+
+    # Case: PermitEmptyPasswords directive not present in $SSHD_CONFIG yet
+    if [ -z "$FIRST_PERMIT_EMPTY_PASSWORDS" ]
+    then
+        # Append 'PermitEmptyPasswords no' at the end of $SSHD_CONFIG
+        echo -e "\nPermitEmptyPasswords no" &gt;&gt; $SSHD_CONFIG
+
+    # Case: PermitEmptyPasswords directive present in $SSHD_CONFIG already
+    else
+        # Replace first uncommented case-insensitive occurrence
+        # of PermitEmptyPasswords directive
+        sed -i "$FIRST_PERMIT_EMPTY_PASSWORDS s/^[[:space:]]*PermitEmptyPasswords.*$/PermitEmptyPasswords no/I" $SSHD_CONFIG
+    fi
+
+# Case: Match block directive present in $SSHD_CONFIG
+else
+
+    # Case: PermitEmptyPasswords directive not present in $SSHD_CONFIG yet
+    if [ -z "$FIRST_PERMIT_EMPTY_PASSWORDS" ]
+    then
+        # Prepend 'PermitEmptyPasswords no' before first uncommented
+        # case-insensitive occurrence of Match block directive
+        sed -i "$FIRST_MATCH_BLOCK s/^\([[:space:]]*Match[^\n]*\)/PermitEmptyPasswords no\n\1/I" $SSHD_CONFIG
+
+    # Case: PermitEmptyPasswords directive present in $SSHD_CONFIG and placed
+    #       before first Match block directive
+    elif [ "$FIRST_PERMIT_EMPTY_PASSWORDS" -lt "$FIRST_MATCH_BLOCK" ]
+    then
+        # Replace first uncommented case-insensitive occurrence
+        # of PermitEmptyPasswords directive
+        sed -i "$FIRST_PERMIT_EMPTY_PASSWORDS s/^[[:space:]]*PermitEmptyPasswords.*$/PermitEmptyPasswords no/I" $SSHD_CONFIG
+
+    # Case: PermitEmptyPasswords directive present in $SSHD_CONFIG and placed
+    # after first Match block directive
+    else
+         # Prepend 'PermitEmptyPasswords no' before first uncommented
+         # case-insensitive occurrence of Match block directive
+         sed -i "$FIRST_MATCH_BLOCK s/^\([[:space:]]*Match[^\n]*\)/PermitEmptyPasswords no\n\1/I" $SSHD_CONFIG
+    fi
+fi
+</fix>
+          <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+            <check-content-ref name="oval:ssg:def:158" href="ssg-fedora-oval.xml"/>
+          </check>
+        </Rule>
+        <Rule id="sshd_set_idle_timeout" selected="false" severity="low">
+          <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">SSH Idle Timeout Interval Used</title>
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">SSH allows administrators to set an idle timeout interval.
+After this interval has passed, the idle user will be automatically logged out.
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+To set an idle timeout interval, edit the following line in
+<xhtml:code>/etc/ssh/sshd_config</xhtml:code> as follows:
+<pre xmlns="http://www.w3.org/1999/xhtml">ClientAliveInterval <b>INTERVAL</b></pre>
+The timeout <b xmlns="http://www.w3.org/1999/xhtml">INTERVAL</b> is given in seconds. To have a timeout of 15
+minutes, set <b xmlns="http://www.w3.org/1999/xhtml">interval</b> to 900.
+<br xmlns="http://www.w3.org/1999/xhtml"/><br xmlns="http://www.w3.org/1999/xhtml"/>
+If a shorter timeout has already been set for the login shell, that value will
+preempt any SSH setting made here. Keep in mind that some processes may stop
+SSH from correctly detecting that the user is idle.
+</description>
+          <reference href="http://iase.disa.mil/cci/index.html">879</reference>
+          <reference href="http://iase.disa.mil/cci/index.html">1133</reference>
+          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+Causing idle users to be automatically logged out guards against compromises
+one system leading trivially to compromises on another.
+</rationale>
+          <fix xmlns:xhtml="http://www.w3.org/1999/xhtml" system="urn:xccdf:fix:script:sh">sshd_idle_timeout_value="<sub xmlns="http://checklists.nist.gov/xccdf/1.1" idref="sshd_idle_timeout_value"/>"
+SSHD_CONFIG='/etc/ssh/sshd_config'
+
+# Obtain line number of first uncommented case-insensitive occurrence of Match
+# block directive (possibly prefixed with whitespace) present in $SSHD_CONFIG
+FIRST_MATCH_BLOCK=$(sed -n '/^[[:space:]]*Match[^\n]*/I{=;q}' $SSHD_CONFIG)
+
+# Obtain line number of first uncommented case-insensitive occurence of
+# ClientAliveInterval directive (possibly prefixed with whitespace) present in
+# $SSHD_CONFIG
+FIRST_CLIENT_ALIVE_INTERVAL=$(sed -n '/^[[:space:]]*ClientAliveInterval[^\n]*/I{=;q}' $SSHD_CONFIG)
+
+# Case: Match block directive not present in $SSHD_CONFIG
+if [ -z "$FIRST_MATCH_BLOCK" ]
+then
+
+    # Case: ClientAliveInterval directive not present in $SSHD_CONFIG yet
+    if [ -z "$FIRST_CLIENT_ALIVE_INTERVAL" ]
+    then
+        # Append 'ClientAliveInterval $sshd_idle_timeout_value' at the end of $SSHD_CONFIG
+        echo -e "\nClientAliveInterval $sshd_idle_timeout_value" &gt;&gt; $SSHD_CONFIG
+
+    # Case: ClientAliveInterval directive present in $SSHD_CONFIG already
+    else
+        # Replace first uncommented case-insensitive occurrence
+        # of ClientAliveInterval directive
+        sed -i "$FIRST_CLIENT_ALIVE_INTERVAL s/^[[:space:]]*ClientAliveInterval.*$/ClientAliveInterval $sshd_idle_timeout_value/I" $SSHD_CONFIG
+    fi
+
+# Case: Match block directive present in $SSHD_CONFIG
+else
+
+    # Case: ClientAliveInterval directive not present in $SSHD_CONFIG yet
+    if [ -z "$FIRST_CLIENT_ALIVE_INTERVAL" ]
+    then
+        # Prepend 'ClientAliveInterval $sshd_idle_timeout_value' before first uncommented
+        # case-insensitive occurrence of Match block directive
+        sed -i "$FIRST_MATCH_BLOCK s/^\([[:space:]]*Match[^\n]*\)/ClientAliveInterval $sshd_idle_timeout_value\n\1/I" $SSHD_CONFIG
+
+    # Case: ClientAliveInterval directive present in $SSHD_CONFIG and placed
+    #       before first Match block directive
+    elif [ "$FIRST_CLIENT_ALIVE_INTERVAL" -lt "$FIRST_MATCH_BLOCK" ]
+    then
+        # Replace first uncommented case-insensitive occurrence
+        # of ClientAliveInterval directive
+        sed -i "$FIRST_CLIENT_ALIVE_INTERVAL s/^[[:space:]]*ClientAliveInterval.*$/ClientAliveInterval $sshd_idle_timeout_value/I" $SSHD_CONFIG
+
+    # Case: ClientAliveInterval directive present in $SSHD_CONFIG and placed
+    # after first Match block directive
+    else
+         # Prepend 'ClientAliveInterval $sshd_idle_timeout_value' before first uncommented
+         # case-insensitive occurrence of Match block directive
+         sed -i "$FIRST_MATCH_BLOCK s/^\([[:space:]]*Match[^\n]*\)/ClientAliveInterval $sshd_idle_timeout_value\n\1/I" $SSHD_CONFIG
+    fi
+fi
+</fix>
+          <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+            <check-export export-name="oval:ssg:var:215" value-id="sshd_idle_timeout_value"/>
+            <check-content-ref name="oval:ssg:def:154" href="ssg-fedora-oval.xml"/>
+          </check>
+        </Rule>
+        <Rule id="sshd_set_keepalive" selected="false" severity="low">
+          <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">SSH Client Alive Count Used</title>
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To ensure the SSH idle timeout occurs precisely when the
+<xhtml:code>ClientAliveCountMax</xhtml:code> is set, edit <xhtml:code>/etc/ssh/sshd_config</xhtml:code> as
+follows:
+<pre xmlns="http://www.w3.org/1999/xhtml">ClientAliveCountMax 0</pre>
+</description>
+          <reference href="http://iase.disa.mil/cci/index.html">879</reference>
+          <reference href="http://iase.disa.mil/cci/index.html">1133</reference>
+          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+This ensures a user login will be terminated as soon as the
+<xhtml:code>ClientAliveCountMax</xhtml:code> is reached.
+</rationale>
+          <fix xmlns:xhtml="http://www.w3.org/1999/xhtml" system="urn:xccdf:fix:script:sh">
+SSHD_CONFIG='/etc/ssh/sshd_config'
+
+# Obtain line number of first uncommented case-insensitive occurrence of Match
+# block directive (possibly prefixed with whitespace) present in $SSHD_CONFIG
+FIRST_MATCH_BLOCK=$(sed -n '/^[[:space:]]*Match[^\n]*/I{=;q}' $SSHD_CONFIG)
+
+# Obtain line number of first uncommented case-insensitive occurence of
+# ClientAliveCountMax directive (possibly prefixed with whitespace) present in
+# $SSHD_CONFIG
+FIRST_CLIENT_ALIVE_COUNT_MAX=$(sed -n '/^[[:space:]]*ClientAliveCountMax[^\n]*/I{=;q}' $SSHD_CONFIG)
+
+# Case: Match block directive not present in $SSHD_CONFIG
+if [ -z "$FIRST_MATCH_BLOCK" ]
+then
+
+    # Case: ClientAliveCountMax directive not present in $SSHD_CONFIG yet
+    if [ -z "$FIRST_CLIENT_ALIVE_COUNT_MAX" ]
+    then
+        # Append 'ClientAliveCountMax 0' at the end of $SSHD_CONFIG
+        echo -e "\nClientAliveCountMax 0" &gt;&gt; $SSHD_CONFIG
+
+    # Case: ClientAliveCountMax directive present in $SSHD_CONFIG already
+    else
+        # Replace first uncommented case-insensitive occurrence
+        # of ClientAliveCountMax directive
+        sed -i "$FIRST_CLIENT_ALIVE_COUNT_MAX s/^[[:space:]]*ClientAliveCountMax.*$/ClientAliveCountMax 0/I" $SSHD_CONFIG
+    fi
+
+# Case: Match block directive present in $SSHD_CONFIG
+else
+
+    # Case: ClientAliveCountMax directive not present in $SSHD_CONFIG yet
+    if [ -z "$FIRST_CLIENT_ALIVE_COUNT_MAX" ]
+    then
+        # Prepend 'ClientAliveCountMax 0' before first uncommented
+        # case-insensitive occurrence of Match block directive
+        sed -i "$FIRST_MATCH_BLOCK s/^\([[:space:]]*Match[^\n]*\)/ClientAliveCountMax 0\n\1/I" $SSHD_CONFIG
+
+    # Case: ClientAliveCountMax directive present in $SSHD_CONFIG and placed
+    #       before first Match block directive
+    elif [ "$FIRST_CLIENT_ALIVE_COUNT_MAX" -lt "$FIRST_MATCH_BLOCK" ]
+    then
+        # Replace first uncommented case-insensitive occurrence
+        # of ClientAliveCountMax directive
+        sed -i "$FIRST_CLIENT_ALIVE_COUNT_MAX s/^[[:space:]]*ClientAliveCountMax.*$/ClientAliveCountMax 0/I" $SSHD_CONFIG
+
+    # Case: ClientAliveCountMax directive present in $SSHD_CONFIG and placed
+    # after first Match block directive
+    else
+         # Prepend 'ClientAliveCountMax 0' before first uncommented
+         # case-insensitive occurrence of Match block directive
+         sed -i "$FIRST_MATCH_BLOCK s/^\([[:space:]]*Match[^\n]*\)/ClientAliveCountMax 0\n\1/I" $SSHD_CONFIG
+    fi
+fi
+</fix>
+          <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+            <check-content-ref name="oval:ssg:def:125" href="ssg-fedora-oval.xml"/>
+          </check>
+        </Rule>
+      </Group>
+    </Group>
+  </Group>
+  <TestResult id="xccdf_org.open-scap_testresult_common" start-time="2014-07-30T09:43:47" end-time="2014-07-30T09:43:55">
+    <benchmark href="/usr/share/xml/scap/ssg/fedora/ssg-fedora-xccdf.xml"/>
+    <title>OSCAP Scan Result</title>
+    <identity authenticated="false" privileged="false">liveuser</identity>
+    <profile idref="common"/>
+    <target>localhost.localdomain</target>
+    <target-address>127.0.0.1</target-address>
+    <target-address>150.203.114.183</target-address>
+    <target-address>0:0:0:0:0:0:0:1</target-address>
+    <target-address>fe80:0:0:0:28c:faff:fe4a:962</target-address>
+    <target-facts>
+      <fact name="urn:xccdf:fact:scanner:name" type="string">OpenSCAP</fact>
+      <fact name="urn:xccdf:fact:scanner:version" type="string">1.0.8</fact>
+      <fact name="urn:xccdf:fact:ethernet:MAC" type="string">00:00:00:00:00:00</fact>
+      <fact name="urn:xccdf:fact:ethernet:MAC" type="string">00:8C:FA:4A:09:62</fact>
+      <fact name="urn:xccdf:fact:ethernet:MAC" type="string">00:00:00:00:00:00</fact>
+      <fact name="urn:xccdf:fact:ethernet:MAC" type="string">00:8C:FA:4A:09:62</fact>
+    </target-facts>
+    <platform idref="cpe:/o:fedoraproject:fedora:20"/>
+    <rule-result idref="disable_prelink" time="2014-07-30T09:43:47" severity="low" weight="1.000000">
+      <result>fail</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:133" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="ensure_gpgcheck_globally_activated" time="2014-07-30T09:43:47" severity="high" weight="1.000000">
+      <result>pass</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:115" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="ensure_gpgcheck_never_disabled" time="2014-07-30T09:43:47" severity="high" weight="1.000000">
+      <result>pass</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:137" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="file_permissions_library_dirs" time="2014-07-30T09:43:51" severity="medium" weight="1.000000">
+      <result>fail</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:148" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="file_ownership_library_dirs" time="2014-07-30T09:43:54" severity="medium" weight="1.000000">
+      <result>fail</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:151" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="file_permissions_binary_dirs" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>pass</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:146" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="file_ownership_binary_dirs" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>pass</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:141" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="no_direct_root_logins" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>notchecked</result>
+      <message severity="info">No candidate or applicable check found.</message>
+      <check system="ocil-transitional">
+        <check-export export-name="the /etc/securetty file is not empty" value-id="conditional_clause"/>
+        <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To ensure root may not directly login to the system over physical consoles,
+run the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml">cat /etc/securetty</pre>
+If any output is returned, this is a finding.
+</check-content>
+      </check>
+    </rule-result>
+    <rule-result idref="securetty_root_login_console_only" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>error</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:139" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="restrict_serial_port_logins" time="2014-07-30T09:43:55" severity="low" weight="1.000000">
+      <result>error</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:156" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="no_root_webbrowsing" time="2014-07-30T09:43:55" severity="low" weight="1.000000">
+      <result>notselected</result>
+      <check system="ocil-transitional">
+        <check-export export-name="this is not the case" value-id="conditional_clause"/>
+        <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+Check the <xhtml:code>root</xhtml:code> home directory for a <xhtml:code>.mozilla</xhtml:code> directory. If
+one exists, ensure browsing is limited to local service administration.
+</check-content>
+      </check>
+    </rule-result>
+    <rule-result idref="no_shelllogin_for_systemaccounts" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>notselected</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:119" href="ssg-fedora-oval.xml"/>
+      </check>
+      <check system="ocil-transitional">
+        <check-export export-name="any system account (other than root) has a login shell" value-id="conditional_clause"/>
+        <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To obtain a listing of all users,
+their UIDs, and their shells, run the command:
+<pre xmlns="http://www.w3.org/1999/xhtml">$ awk -F: '{print $1 ":" $3 ":" $7}' /etc/passwd</pre>
+Identify the system accounts from this listing. These will
+primarily be the accounts with UID numbers less than 500, other
+than root.
+</check-content>
+      </check>
+    </rule-result>
+    <rule-result idref="no_uidzero_except_root" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>pass</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:121" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="root_path_default" time="2014-07-30T09:43:55" severity="low" weight="1.000000">
+      <result>notselected</result>
+      <check system="ocil-transitional">
+        <check-export export-name="any of these conditions are not met" value-id="conditional_clause"/>
+        <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To view the root user's <xhtml:code>PATH</xhtml:code>, run the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># env | grep PATH</pre>
+If correctly configured, the <xhtml:code>PATH</xhtml:code> must: use vendor default settings,
+have no empty entries, and have no entries beginning with a character
+other than a slash (/).
+</check-content>
+      </check>
+    </rule-result>
+    <rule-result idref="no_empty_passwords" time="2014-07-30T09:43:55" severity="high" weight="1.000000">
+      <result>fail</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:135" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="no_hashes_outside_shadow" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>pass</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:131" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="gid_passwd_group_same" time="2014-07-30T09:43:55" severity="low" weight="1.000000">
+      <result>notselected</result>
+      <check system="ocil-transitional">
+        <check-export export-name="there is output" value-id="conditional_clause"/>
+        <check-content xmlns:xhtml="http://www.w3.org/1999/xhtml">
+To ensure all GIDs referenced in <xhtml:code>/etc/passwd</xhtml:code> are defined in <xhtml:code>/etc/group</xhtml:code>,
+run the following command:
+<pre xmlns="http://www.w3.org/1999/xhtml"># pwck -qr</pre>
+There should be no output.
+</check-content>
+      </check>
+    </rule-result>
+    <rule-result idref="no_netrc_files" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>pass</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:144" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="accounts_password_minlen_login_defs" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>fail</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-export export-name="oval:ssg:var:212" value-id="var_accounts_password_minlen_login_defs"/>
+        <check-content-ref name="oval:ssg:def:111" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="accounts_minimum_age_login_defs" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>fail</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-export export-name="oval:ssg:var:213" value-id="var_accounts_minimum_age_login_defs"/>
+        <check-content-ref name="oval:ssg:def:113" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="accounts_maximum_age_login_defs" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>fail</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-export export-name="oval:ssg:var:211" value-id="var_accounts_maximum_age_login_defs"/>
+        <check-content-ref name="oval:ssg:def:109" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="accounts_password_warn_age_login_defs" time="2014-07-30T09:43:55" severity="low" weight="1.000000">
+      <result>pass</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-export export-name="oval:ssg:var:214" value-id="var_accounts_password_warn_age_login_defs"/>
+        <check-content-ref name="oval:ssg:def:129" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="service_ntpd_enabled" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>fail</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:127" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="ntpd_specify_remote_server" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>fail</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:161" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="sshd_disable_root_login" time="2014-07-30T09:43:55" severity="medium" weight="1.000000">
+      <result>pass</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:163" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="sshd_disable_empty_passwords" time="2014-07-30T09:43:55" severity="high" weight="1.000000">
+      <result>pass</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:158" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="sshd_set_idle_timeout" time="2014-07-30T09:43:55" severity="low" weight="1.000000">
+      <result>pass</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-export export-name="oval:ssg:var:215" value-id="sshd_idle_timeout_value"/>
+        <check-content-ref name="oval:ssg:def:154" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <rule-result idref="sshd_set_keepalive" time="2014-07-30T09:43:55" severity="low" weight="1.000000">
+      <result>pass</result>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref name="oval:ssg:def:125" href="ssg-fedora-oval.xml"/>
+      </check>
+    </rule-result>
+    <score system="urn:xccdf:scoring:default" maximum="100.000000">48.958336</score>
+  </TestResult>
+</Benchmark>

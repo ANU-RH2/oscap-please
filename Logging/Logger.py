@@ -16,7 +16,7 @@
 
 from datetime import datetime
 from LogEvents import *
-__author__ = 'u5195918'
+__author__ = 'u519591'
 
 
 class Logger:
@@ -46,9 +46,9 @@ class Logger:
             # If not adjust it.
             requested_width = self.log_file_width
             self.log_file_width = self.default_width
-            self.text_width = self.log_file_width - self.date_width
             self.log(LogWidthSizeError(requested_width, self.default_width))
 
+        self.text_width = self.log_file_width - self.date_width
 
         self.write_heading()
 
@@ -57,7 +57,6 @@ class Logger:
         # are required to log it.
 
         # Was it fatal?
-        # TODO Make this cleaner, this is checked too many times
         if log_object.fatal:
             fatal_string = 'FATAL: '
         else:

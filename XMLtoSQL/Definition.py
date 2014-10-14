@@ -4,78 +4,60 @@
 #
 #       Written By: Theodore Olsauskas-Warren - u5195918
 #               In: August 2014
-#          Version: MVP
+#          Version: Extended Edition
 #
-# This file defines what a definition looks like, including the basic schema
-# information for the MVP single relation database. The information that
-# collections objects extract from their respective input files must match the
-# types of information contained here. Some cleaning of inputs takes place, for
-# example only Pass, Fail and NA results are permitted, any others are changed
-# into these three types. Extending the information contained in the schema
-# is as simple as adding to the classes schema object and adding the appropriate
-# class variables.
-#TODO Fix mismatches between database names
+# This class has has a significant reduction in size in the EE. It now forms
+# a single part of a larger database, rather than the entire database. It is
+# created by collections and populated with information extracted from the
+# input files, it is then simply inserted into the DB. Changes to the
+# information regarding definitions can be made by extending the schema
+# in any way the developer desires, as long as the functions creating the
+# definition are also updates. Definitions are also the only encapsulation to
+# by default truncate the length of their attributes, as they are far and
+# above the most likely to exceed them.
 
 __author__ = 'u5195918'
 
 
 class Definition:
-    schema = (('machine_name', 'VARCHAR(255) NOT NULL'),
-              ('unique_id', 'VARCHAR(255) NOT NULL'),
-              ('definition_name', 'VARCHAR(255) NOT NULL'),
-              ('result', 'VARCHAR(255) NOT NULL'),
-              ('date', 'TIMESTAMP NOT NULL'),
-              ('PRIMARY KEY', '(machine_name, unique_id, Date)')
-    )
 
-    def __init__(self, machine_name, unique_id, definition_name, result, date):
-        self.machine_name = machine_name
-        self.unique_id = unique_id
-        self.definition_name = definition_name
-        self.date = date
-        self.result = result
+    schema_name = "DEFINITIONS"
+    schema = (('id', 'VARCHAR(255) NOT NULL'),
+              ('title', 'VARCHAR(255) NOT NULL'),
+              ('description', 'VARCHAR(255) NOT NULL'),
+              ('resolution', 'VARCHAR(255) NOT NULL'),
+              ('PRIMARY KEY', '(id)'))
 
-        self.validate_definition()
+    def __init__(self, unique_id, title, description, resolution):
+        self.id = unique_id
+        self.title = title
+        self.description = description
+        self.resolution = resolution
+        self.validate()
+
+    def validate(self):
+        # Ensure entries meet database requirements
+        self.resolution = self.truncate_string(self.resolution)
+        self.description = self.truncate_string(self.description)
+
+        # Strip excessive whitespace
+        self.resolution = ' '.join(self.resolution.split())
+        self.description = ' '.join(self.description.split())
 
     def __str__(self):
-        return "(Machine Name: " + self.machine_name + \
-               " Unique ID " + self.unique_id + \
-               " Definition Name: " + self.definition_name +\
-               " Result: " + self.result +\
-               " Date: " + self.date + ")"
+        return "(Id: " + self.id + \
+               " Title: " + self.title + \
+               " Description: " + self.description + \
+               " Resolution: " + self.resolution + ")"
 
-    def validate_definition(self):
-        # Does this definition pass formatting tests?
-        # TODO Add logging to the fixes
-        if len(self.machine_name) > 255:
-            self.machine_name = self.machine_name[:255]
-        if len(self.definition_name) > 255:
-            self.definition_name = self.definition_name[:255]
+    @staticmethod
+    def truncate_string(input_string):
+        if input_string is not None:
+            string_length = 255
+            return input_string[:string_length]
+        return input_string
 
-        # Ensure results is either Pass, Fail or Not Applicable
 
-        if self.result != 'Pass' or self.result != 'Fail' \
-                or self.result != 'Not Applicable':
-            if 'pass' in self.result.lower() or 'true' in self.result.lower():
-                # print 'Normalised ' + self.result + ' to Pass'
-                self.result = 'Pass'
-            elif 'fail' in self.result.lower() or \
-                 'false' in self.result.lower():
-                # print 'Normalised ' + self.result + ' to Fail'
-                self.result = 'Fail'
-            else:
-                # print 'Normalised ' + self.result + ' to NA'
-                self.result = 'Not Applicable'
-
-    class Date:
-        # Normalised Date Object for Entry into PSQL
-        def __init__(self, second, minute, hour, day, month, year):
-            # Take input and format it so postgres will accept it
-            self.timestamp = year + '-' + month + '-' + day + ' ' + hour\
-                            + ':' + minute + ':' + second
-
-        def __str__(self):
-            return self.timestamp.decode('ascii', 'ignore')
 
 
 

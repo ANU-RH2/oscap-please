@@ -3,7 +3,7 @@
 # Provides the state of user-configuration.
 import datetime
 import sys
-
+import re
 # Dict from option names to associated ConfigOption ojbect
 options = {}
 
@@ -41,6 +41,7 @@ class ConfigOption:
         self.name = name
         self.value = None
         self.mandatory = mandatory
+        self.set = False
         options[name] = self
 
 # Database connection info
@@ -62,6 +63,28 @@ def where_only_before(date):
 ConfigOption("start_date", date_from_iso, where_only_after)
 ConfigOption("end_date", date_from_iso, where_only_before)
 
+# Machine name and group filtering
+def regexp(exp):
+    # We'll use python's regexp compilation to test for a valid regular
+    # expression.
+    re.compile(exp)
+    try: re.compile(exp)
+    except: 
+        raise Exception("Error: unable to compile regular expression %s" %exp)
+
+    # We need to convert \ to \\ since postgres will interpret them instead
+    # of the regex. The python interpreter does the same thing.
+    return exp.replace("\\", "\\\\") 
+
+def where_name(exp):
+    return "machine_name ~ %s", (regexp(exp),)
+
+def where_group(exp):
+    return "group_name ~ %s", (regexp(exp),)
+
+ConfigOption("machine_name", regexp, where_name)
+ConfigOption("group_name", regexp, where_group)
+
 # Read the config file
 lineno = 0
 for line in  file("config.cfg").readlines():
@@ -80,7 +103,8 @@ for line in  file("config.cfg").readlines():
         print "Unable to parse config line %d: %s" % (lineno, line)
     if parts[0] in options:
         opt = options[parts[0]]
-        opt.value = opt.str_to_val(parts[1])    
+        opt.value = opt.str_to_val(parts[1])
+        opt.set = True
     else:
         print "Unkown option in config %d: %s" % (lineno, line)
 

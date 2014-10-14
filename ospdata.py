@@ -5,22 +5,14 @@
 
 import config
 import sql
+import json
 
-# This provides a basic list of machines, definitions,
-# and the results on a given day.
-# Also gives the configuration used to generate the output.
-# The output is a a pair containing the configuration as a dict,
-# and a list of dictionaries, where each corresponds to one test.
-
-# Example test record:
-# {'date': datetime.date(2014, 8, 4),
-#   'machine_name': 'ejo-port',
-#   'definition_name': 'Enterprise Quality Solution',
-#   'result': 'Failed'}
-def get_MVP():
-    #Temp: Strip config data since Alex' work doesn't expect it yet
-    return sql.get_MVP()[1]
+# The most basic operation: fetch the collections as-is
+# from the database.
+# Will return [("machine_name", "date", "no_of_tests", "pass_rate")] as JSON.
+# Will be filtered based on config.cfg
+def get_collections():
+    return json.dumps(sql.get_collections())
 
 if __name__ == "__main__":
-    for r in get_MVP():
-        print r
+    print get_collections()

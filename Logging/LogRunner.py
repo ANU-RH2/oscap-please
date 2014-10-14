@@ -1,3 +1,6 @@
+# This file has been depreciated, It was used for testing in the development
+# of the logging module.
+
 __author__ = 'sauski'
 
 from Logger import Logger
