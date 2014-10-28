@@ -1,0 +1,21 @@
+OSPData Component Technical Document
+Elliot Osborne
+
+The ospdata compoment consists of three files: config.cfg, config.py and ospdata.py
+
+config.py is responsible for reading the configuration file, config.cfg and providing access to the configured options. ospdata.py provides a method for extracting the data requested in the config file from the database, and outputting it into the report file requested in the command line options. The report itself is a copy of javascript_report/report_javascript.htm ; ospdata.py only needs to copy this file and insert the data at the appropriate place.
+
+The bulk of ospdata.py's work is accompished in the make_report() function. We first connect to the database, then build an SQL query to collect the requested data.
+
+The array cols contains the names of the columns in the database which we need to select for report_javascript.htm ; colnames contains the names used to refer to them in report_javascript.htm
+
+The initial query is just a join of all the tables we need for filtering and to get the selected data.
+
+We next add a set of clauses to filter the data based on the config.cfg configuration (more on this later).
+
+Then, we execture the query, convert the data into a list of dictionaries with the names used in report_javascript.htm, and serialize it into json, which we finally write into the new report file.
+
+Most of the serialization is accomplished via pythons built-in json library, using json.dumps to convert the python objected produced by psycopg into a string that can be written directly into the report file. However, the json library does not know about every python object which psycopg can produce; in particular, it is unable to serialize datetime.datetime objects, which psycopg uses for timestamps. Therefore, before passing the data off json.dumps, we first run it through the make_serializable function, which converts datetime.datetime objects to a string.
+
+On the clauses built from the configuration: these are defined in config.py
+for each option which the end-user should be able to configure, we instantiate the ConfigOption class. This class requires definitions for the name of the object, a method for converting the string in the config file into a python object (the configured value), and, optionally, a way to convert that value into a where clause for filtering the dataset. You can also set options as mandatory, in which case ospdata.py will raise an exception if the option is not configured.

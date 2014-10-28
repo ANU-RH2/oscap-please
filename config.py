@@ -4,6 +4,7 @@
 import datetime
 import sys
 import re
+import Logging
 # Dict from option names to associated ConfigOption ojbect
 options = {}
 
@@ -11,7 +12,8 @@ options = {}
 def option(name):
     if name in options:
         return options[name].value
-    else: raise Exception("Undefined option: %s" %name)
+    else: 
+        raise Exception("Undefined option: %s" %name)
 
 # Note on SQL Injection: psycopg2 will automatically
 # sanitise input _as long as you pass it correctly_
@@ -44,10 +46,6 @@ class ConfigOption:
         self.set = False
         options[name] = self
 
-# Database connection info
-ConfigOption("db_username", str, mandatory=True)
-ConfigOption("db_dbname", str, mandatory=True)
-
 # Date filtering
 def date_from_iso(datestring):
     #todo nice error handling    
@@ -73,7 +71,7 @@ def regexp(exp):
         raise Exception("Error: unable to compile regular expression %s" %exp)
 
     # We need to convert \ to \\ since postgres will interpret them instead
-    # of the regex. The python interpreter does the same thing.
+    # of the regex. The python interpreter does the same thing, hence 4 here.
     return exp.replace("\\", "\\\\") 
 
 def where_name(exp):

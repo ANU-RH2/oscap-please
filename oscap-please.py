@@ -8,6 +8,7 @@ import Parser
 from Logging import Logger
 from Logging.LogEvents import *
 from XMLtoSQL import Controller
+import ospdata
 import sys
 
 parser = Parser.Parser(sys.argv[1:])
@@ -27,8 +28,7 @@ if options.insert_mode:
     controller = Controller.Controller(options, logger)
     controller.extract_and_insert()
 else:
-    #TODO ADD INTEGRATION CODE HERE
-    quit()
+    ospdata.make_report(options, logger)
 
 
 

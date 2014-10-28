@@ -122,12 +122,12 @@ class Parser:
     @staticmethod
     def print_help():
         # Print the help function and exit
-        print 'usage: OSP.py (-o <file> | -h | -i ) ' \
+        print 'usage: oscap-please.py (-o <file> | -h | -i ) ' \
               '[-c <file>] [-d <dbname>] ' \
               '[-u <dbuser>] [-l <logfile>] [-m <width>] ' \
               '[-v <level>] [-w <level>] -f <files>...'
         print ''
-        print 'OhScapPlease OpenSCAP result storage and report generation'
+        print 'oscap-please OpenSCAP result storage and report generation'
         print ''
         print ' -h   --help         Display this help message'
         print ' -o   --output       Select report generation mode and specify '\

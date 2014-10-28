@@ -371,3 +371,15 @@ class RelationAlreadyExists:
     def __str__(self):
         return 'Relation ' + self.relation_name + ' already exists in ' \
                'database ' + self.db_name + '.'
+
+class SerializationError:
+    """Error while serializing a python object for export to javascript"""
+    def __init__(self, error):
+        self.error = error
+        self.verbosity = 1
+        self.fatal = True
+
+    def __str(self):
+        return "Exception when trying to export to javascript" + str(self.error)
+
+
